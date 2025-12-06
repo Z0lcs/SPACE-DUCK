@@ -1,0 +1,5 @@
+-Túlélős (kacsaként egy fiktív bolygón)
+-Város irányítás (lámpák, tömegközlekedés)
+-Vonat Simulator
+-
+
