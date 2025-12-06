@@ -1,3 +1,7 @@
+# ----------------------------------------------------------------------
+# EREDETI UNITY GITIGNORE RÉSZ
+# ----------------------------------------------------------------------
+
 # This .gitignore file should be placed at the root of your Unity project directory
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
@@ -97,3 +101,51 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# ----------------------------------------------------------------------
+# KIEGÉSZÍTÉS: Általános Fejlesztői Környezet (IDE-k)
+# ----------------------------------------------------------------------
+
+# Visual Studio Code cache directory
+.vscode/
+
+# ReSharper / JetBrains Rider cache
+_ReSharper/
+*.ReSharperManaged.json
+
+# ----------------------------------------------------------------------
+# KIEGÉSZÍTÉS: Unity Csomagkezelés (Package Manager) és Felhasználói Beállítások
+# ----------------------------------------------------------------------
+
+# Lock file - a projekt helyi (felhasználóspecifikus) csomagbeállításai
+/Packages/packages-lock.json
+
+# UPM cache és helyi packages
+/upm-cache/
+
+# Projekt beállítások, amik csak a helyi felhasználóra vonatkoznak
+/[Aa]ssets/Editor/.DS_Store
+/[Aa]ssets/Editor/User[Ss]ettings/
+
+# ----------------------------------------------------------------------
+# KIEGÉSZÍTÉS: Eszközök és Platformok (iOS, Android, WebGL)
+# ----------------------------------------------------------------------
+
+# Exportált Xcode project mappa (iOS build)
+/Builds/iOS/
+/Builds/Android/
+/Builds/WebGL/
+
+# ----------------------------------------------------------------------
+# KIEGÉSZÍTÉS: Operációs Rendszer Fájlok (Mac/Windows)
+# ----------------------------------------------------------------------
+
+# macOS / OS X fájlok
+.DS_Store
+**/.DS_Store
+
+# Windows / Thumbnails / Desktop
+Thumbs.db
+*/Thumbs.db
+Desktop.ini
+*/Desktop.ini
