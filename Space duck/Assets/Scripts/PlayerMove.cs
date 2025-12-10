@@ -21,8 +21,8 @@ public class PlayerMove : MonoBehaviour
     public bool grounded;
 
     [Header("Camera and Rotation")]
-    public Transform orientation; 
-    public float rotationSpeed = 10f; 
+    public Transform orientation;
+    public float rotationSpeed = 10f;
 
     private Transform mainCam;
 
@@ -35,7 +35,11 @@ public class PlayerMove : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+
         rb.freezeRotation = true;
+
+        rb.centerOfMass = Vector3.zero;
+
         readyToJump = true;
 
         if (Camera.main != null)
@@ -49,6 +53,7 @@ public class PlayerMove : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
     }
 
     private void myInput()
@@ -66,12 +71,7 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
-
         myInput();
-        speedControl();
-
-        rb.linearDamping = grounded ? groundDrag : 0f;
 
         if (mainCam != null && orientation != null)
         {
@@ -79,7 +79,37 @@ public class PlayerMove : MonoBehaviour
             viewDirection.y = 0;
             orientation.forward = viewDirection.normalized;
         }
+    }
 
+    void FixedUpdate()
+    {
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
+
+        speedControl();
+        rb.linearDamping = grounded ? groundDrag : 0f;
+        movePlayer();
+
+        handleRotation();
+    }
+
+    private void movePlayer()
+    {
+        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+
+        moveDirection.y = 0;
+
+        if (grounded)
+        {
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+        }
+        else
+        {
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+        }
+    }
+
+    private void handleRotation()
+    {
         if (horizontalInput != 0 || verticalInput != 0)
         {
             Vector3 directionToMove = orientation.forward * verticalInput + orientation.right * horizontalInput;
@@ -98,25 +128,6 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
-    {
-        movePlayer();
-    }
-
-    private void movePlayer()
-    {
-        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-
-        if (grounded)
-        {
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
-        }
-        else
-        {
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
-        }
-    }
-
     private void speedControl()
     {
         Vector3 flatVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
@@ -124,6 +135,7 @@ public class PlayerMove : MonoBehaviour
         if (flatVel.magnitude > moveSpeed)
         {
             Vector3 limitedVel = flatVel.normalized * moveSpeed;
+
             rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
         }
     }
