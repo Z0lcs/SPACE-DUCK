@@ -210,9 +210,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 1079444872}
     m_Modifications:
     - target: {fileID: 193867331931236274, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
+      propertyPath: questLogUI
+      value: 
+      objectReference: {fileID: 197365521}
+    - target: {fileID: 193867331931236274, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
       propertyPath: currentQuest
       value: 
-      objectReference: {fileID: 11400000, guid: eb2e01dfa0259014bb70c01bacabddd1, type: 2}
+      objectReference: {fileID: 0}
+    - target: {fileID: 1781313411038459259, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
+      propertyPath: m_text
+      value: WASD
+      objectReference: {fileID: 0}
     - target: {fileID: 2553807826475619590, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
       propertyPath: m_Name
       value: QuestSlot (4)
@@ -345,6 +353,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9182159368974758762, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
+      propertyPath: m_text
+      value: Lv. 69
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -374,9 +386,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 1079444872}
     m_Modifications:
     - target: {fileID: 193867331931236274, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
+      propertyPath: questLogUI
+      value: 
+      objectReference: {fileID: 197365521}
+    - target: {fileID: 193867331931236274, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
       propertyPath: currentQuest
       value: 
       objectReference: {fileID: 11400000, guid: 4e6f3851782e18b4c88a6fea769cc995, type: 2}
+    - target: {fileID: 1781313411038459259, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
+      propertyPath: m_text
+      value: Ez egy quest
+      objectReference: {fileID: 0}
     - target: {fileID: 2553807826475619590, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
       propertyPath: m_Name
       value: QuestSlot (1)
@@ -508,6 +528,10 @@ PrefabInstance:
     - target: {fileID: 7476818225217676001, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9182159368974758762, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
+      propertyPath: m_text
+      value: Lv. 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -714,6 +738,7 @@ GameObject:
   - component: {fileID: 197365519}
   - component: {fileID: 197365518}
   - component: {fileID: 197365520}
+  - component: {fileID: 197365521}
   m_Layer: 5
   m_Name: QuestLog
   m_TagString: Untagged
@@ -792,6 +817,18 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &197365521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 197365516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3ebf191561b5c14e91c4ba2539ee881, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &208988945 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1493958779012619316, guid: b9de24523a11d714db3851b5f0f9d527, type: 3}
@@ -2591,6 +2628,7 @@ GameObject:
   - component: {fileID: 810441885}
   - component: {fileID: 810441883}
   - component: {fileID: 810441884}
+  - component: {fileID: 810441886}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2691,6 +2729,21 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &810441886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 810441881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4af5fb5bb975a664ca2a8131cef9d348, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toggleKey: 107
+  cameraMovementScript: {fileID: 0}
+  playerMovementScript: {fileID: 0}
 --- !u!4 &818219460 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 880970725214738984, guid: c60edd51c065ceb46b345849a03bc106, type: 3}
@@ -3532,9 +3585,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 1079444872}
     m_Modifications:
     - target: {fileID: 193867331931236274, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
+      propertyPath: questLogUI
+      value: 
+      objectReference: {fileID: 197365521}
+    - target: {fileID: 193867331931236274, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
       propertyPath: currentQuest
       value: 
       objectReference: {fileID: 11400000, guid: ce946221a9f0fe24f90bde8c21ff34c3, type: 2}
+    - target: {fileID: 1781313411038459259, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
+      propertyPath: m_text
+      value: Kis kacsa
+      objectReference: {fileID: 0}
     - target: {fileID: 2553807826475619590, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
       propertyPath: m_Name
       value: QuestSlot (3)
@@ -3666,6 +3727,10 @@ PrefabInstance:
     - target: {fileID: 7476818225217676001, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9182159368974758762, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
+      propertyPath: m_text
+      value: Lv. 67
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6547,7 +6612,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1942014162}
   - component: {fileID: 1942014159}
-  - component: {fileID: 1942014161}
   - component: {fileID: 1942014160}
   m_Layer: 0
   m_Name: UICamera
@@ -6651,14 +6715,6 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!81 &1942014161
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1942014158}
-  m_Enabled: 1
 --- !u!4 &1942014162
 Transform:
   m_ObjectHideFlags: 0
@@ -6916,9 +6972,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 1079444872}
     m_Modifications:
     - target: {fileID: 193867331931236274, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
+      propertyPath: questLogUI
+      value: 
+      objectReference: {fileID: 197365521}
+    - target: {fileID: 193867331931236274, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
       propertyPath: currentQuest
       value: 
       objectReference: {fileID: 11400000, guid: 7a5a2fa26345b26468825cf7efce2d24, type: 2}
+    - target: {fileID: 1781313411038459259, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
+      propertyPath: m_text
+      value: "Ez egy m\xE1sik "
+      objectReference: {fileID: 0}
     - target: {fileID: 2553807826475619590, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
       propertyPath: m_Name
       value: QuestSlot (2)
@@ -7050,6 +7114,10 @@ PrefabInstance:
     - target: {fileID: 7476818225217676001, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9182159368974758762, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
+      propertyPath: m_text
+      value: Lv. 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7372,9 +7440,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 1079444872}
     m_Modifications:
     - target: {fileID: 193867331931236274, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
+      propertyPath: questLogUI
+      value: 
+      objectReference: {fileID: 197365521}
+    - target: {fileID: 193867331931236274, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
       propertyPath: currentQuest
       value: 
-      objectReference: {fileID: 11400000, guid: e00e5653b0dde324ea7442a57537e11f, type: 2}
+      objectReference: {fileID: 11400000, guid: eb2e01dfa0259014bb70c01bacabddd1, type: 2}
+    - target: {fileID: 1781313411038459259, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
+      propertyPath: m_text
+      value: Szar VSC
+      objectReference: {fileID: 0}
     - target: {fileID: 2553807826475619590, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
       propertyPath: m_Name
       value: QuestSlot
@@ -7507,6 +7583,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9182159368974758762, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
+      propertyPath: m_text
+      value: Lv. 99
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7592,10 +7672,10 @@ SceneRoots:
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 1228700158}
+  - {fileID: 1462171347}
   - {fileID: 810441882}
   - {fileID: 748146505}
   - {fileID: 395325054}
   - {fileID: 1996970671}
   - {fileID: 1013407918}
   - {fileID: 1196118969}
-  - {fileID: 1462171347}

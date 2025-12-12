@@ -10,10 +10,13 @@ public class QuestSlotLog : MonoBehaviour
     
     public QuestSO currentQuest;
 
+    public QuestLogUI questLogUI;
+
     private void OnValidate()
     {
         if (currentQuest != null)
             SetQuest(currentQuest);
+        else gameObject.SetActive(false);
     }
 
     public void SetQuest(QuestSO questSO)
@@ -21,5 +24,15 @@ public class QuestSlotLog : MonoBehaviour
         currentQuest = questSO;
         questNameText.text = questSO.questName;
         questLevelText.text = "Lv. " + questSO.questLevel.ToString();
+
+        gameObject.SetActive(true);
     }
+
+    public void OnQuestSlotClicked()
+    {
+        if (currentQuest != null && questLogUI != null)
+        {
+            questLogUI.HandleQuestClicked(currentQuest);
+        }
+    } 
 }
