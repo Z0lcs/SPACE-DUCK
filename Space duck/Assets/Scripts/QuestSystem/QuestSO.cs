@@ -19,7 +19,7 @@ public class QuestObjective
 
     [SerializeField] private Object target;
 
-    public ItemSO targetItem => target as ItemSO;
+    public InventoryItemSO targetItem => target as InventoryItemSO;
     public ActorSO targetNPC=> target as ActorSO;
     public LocationSO targetLocation => target as LocationSO;
 
