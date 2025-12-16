@@ -3,34 +3,43 @@ using UnityEngine;
 
 public class QuestManager : MonoBehaviour
 {
-    private Dictionary<QuestSO, Dictionary<QuestObjective, int>> getProgress = new();
+    private Dictionary<QuestSO, Dictionary<QuestObjective, int>> questProgress = new();
 
     public void UpdateObjectiveProgress(QuestSO questSO, QuestObjective objective)
     {
-        if (!getProgress.ContainsKey(questSO))
+        if (!questProgress.ContainsKey(questSO))
         {
-            getProgress[questSO] = new Dictionary<QuestObjective, int>();
+            questProgress[questSO] = new Dictionary<QuestObjective, int>();
         }
-        var progressDict = getProgress[questSO];
+        var progressDict = questProgress[questSO];
         int newAmount = 0;
          
         if (objective.targetItem != null)
         {
             //newAmount = InventoryManager.Instance.GetItemQuantity(objective.targetItem);
         }
-        
-
-
-
-        if (!getProgress[questSO].ContainsKey(objective))
+        else if (objective.targetLocation != null && GameManager.Instance.LocationTrack.HasVisited(objective.targetLocation))
         {
-            getProgress[questSO][objective] = 0;
+            newAmount=objective.requiredAmount;
         }
-        getProgress[questSO][objective] += 1; 
+        else if (objective.targetNPC != null && GameManager.Instance.DialogueHistoryTracker.HasSpokenWith(objective.targetNPC))
+        {
+            newAmount=objective.requiredAmount;
+        }
+
+        progressDict[objective]=newAmount;
+
+
+
+        if (!questProgress[questSO].ContainsKey(objective))
+        {
+            questProgress[questSO][objective] = 0;
+        }
+        questProgress[questSO][objective] += 1; 
     }
     public string GetProgressText(QuestSO questSO, QuestObjective objective)
     {
-        int currentAmount = 0;
+        int currentAmount =GetCurrentAmount(questSO, objective);
 
         if (currentAmount >= objective.requiredAmount)
             return "Complete ";
@@ -40,4 +49,12 @@ public class QuestManager : MonoBehaviour
         else
             return "In progress";
     }
+
+    public int GetCurrentAmount(QuestSO questSO, QuestObjective objective)
+    {
+        if (questProgress.TryGetValue(questSO, out var objectiveDictionary))
+            if (objectiveDictionary.TryGetValue(objective, out int amount))
+                return amount;
+        return 0;
+    }   
 }
