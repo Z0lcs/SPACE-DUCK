@@ -7,7 +7,7 @@ public class QuestSO : ScriptableObject
 {
     public string questName;
     [TextArea] public string questDescription;
-    public int questLevel;
+    //public int questLevel;
 
     public List<QuestObjective> questObjectives;
 }

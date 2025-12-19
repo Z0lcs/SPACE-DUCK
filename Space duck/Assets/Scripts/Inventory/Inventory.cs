@@ -14,7 +14,7 @@ public class Inventory : MonoBehaviour
     public Image dragIcon;
 
     public float pickupRange = 10f;
-    private Item lookedAtItem = null;
+    //private Item lookedAtItem = null;
     public Material highlightMaterial;
     private Material originalMaterial;
     private Renderer lookedAtRenderer;

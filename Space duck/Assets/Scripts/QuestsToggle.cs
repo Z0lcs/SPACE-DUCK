@@ -1,16 +1,18 @@
 using UnityEngine;
 
-public class CursorToggle : MonoBehaviour
+public class QuestsToggle : MonoBehaviour
 {
     public KeyCode toggleKey = KeyCode.K;
 
     public MonoBehaviour cameraMovementScript;
     public MonoBehaviour playerMovementScript;
+    public GameObject uiElementToToggle;
 
     private bool isCursorVisible;
 
     void Start()
     {
+        uiElementToToggle.SetActive(false);
         isCursorVisible = false;
         SetCursorState(isCursorVisible);
     }
@@ -35,7 +37,7 @@ public class CursorToggle : MonoBehaviour
 
             if (cameraMovementScript != null) cameraMovementScript.enabled = false;
             if (playerMovementScript != null) playerMovementScript.enabled = false;
-
+            uiElementToToggle.SetActive(true);
             Debug.Log("Egér kurzor bekapcsolva és a játék szünetel.");
         }
         else
@@ -47,7 +49,7 @@ public class CursorToggle : MonoBehaviour
 
             if (cameraMovementScript != null) cameraMovementScript.enabled = true;
             if (playerMovementScript != null) playerMovementScript.enabled = true;
-
+            uiElementToToggle.SetActive(false);
             Debug.Log("Egér kurzor kikapcsolva és a játék folytatódik.");
         }
     }

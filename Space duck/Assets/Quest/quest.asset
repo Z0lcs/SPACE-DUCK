@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f421ba9b15377f448bc5bd279a39bd0, type: 3}
-  m_Name: Quest4
+  m_Name: quest
   m_EditorClassIdentifier: 
-  questName: WASD
-  questDescription: 
-  questLevel: 69
+  questName: Mit is kell tennem?
+  questDescription: "Nyisd meg a Quest men\xFCt [K]"
+  questObjectives: []
