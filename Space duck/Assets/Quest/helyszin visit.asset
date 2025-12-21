@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f421ba9b15377f448bc5bd279a39bd0, type: 3}
   m_Name: helyszin visit
   m_EditorClassIdentifier: 
-  questName: "M\u0171hely"
-  questDescription: "Menj el, \xE9s n\xE9zd meg a m\u0171helyt"
+  questName: "M\xFBhely"
+  questDescription: "Menj el, \xE9s n\xE9zd meg a m\xFBhelyt"
   questObjectives:
   - description: "M\u0171hely"
     target: {fileID: 11400000, guid: fe55a0ad3af5c7f40bc32e54deaa0909, type: 2}

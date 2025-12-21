@@ -8,6 +8,9 @@ public class QuestsToggle : MonoBehaviour
     [SerializeField] private MonoBehaviour playerMovementScript;
     public GameObject uiElementToToggle;
     public GameObject uiElementNotToToggle;
+    public GameObject uiElementNotToToggle2;
+    public GameObject uiElementNotToToggle3;
+    public GameObject uiElementNotToToggle4;
 
     private bool isCursorVisible;
 
@@ -39,6 +42,9 @@ public class QuestsToggle : MonoBehaviour
             if (playerMovementScript != null) playerMovementScript.enabled = false;
             uiElementToToggle.SetActive(true);
             uiElementNotToToggle.SetActive(false);
+            uiElementNotToToggle2.SetActive(false);
+            uiElementNotToToggle3.SetActive(false);
+            uiElementNotToToggle4.SetActive(false);
         }
         else
         {
@@ -50,6 +56,9 @@ public class QuestsToggle : MonoBehaviour
             if (playerMovementScript != null) playerMovementScript.enabled = true;
             uiElementToToggle.SetActive(false);
             uiElementNotToToggle.SetActive(true);
+            uiElementNotToToggle2.SetActive(true);
+            uiElementNotToToggle3.SetActive(true);
+            uiElementNotToToggle4.SetActive(true);
         }
     }
 }

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f421ba9b15377f448bc5bd279a39bd0, type: 3}
   m_Name: mozgas
   m_EditorClassIdentifier: 
-  questName: "Els\u0151 l\xE9p\xE9sek"
-  questDescription: "Tanuld meg az alapmozg\xE1st: el\u0151re, h\xE1tra, balra \xE9s
+  questName: "Els\xF4 l\xE9p\xE9sek"
+  questDescription: "Tanuld meg az alapmozg\xE1st: el\xF4re, h\xE1tra, balra \xE9s
     jobbra!"
   questObjectives:
   - description: 'WASD '

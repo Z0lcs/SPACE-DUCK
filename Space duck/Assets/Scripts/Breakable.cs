@@ -4,7 +4,7 @@ using System.Collections;
 public class Breakable : MonoBehaviour
 {
     [SerializeField] private GameObject _replacement;
-    [SerializeField] private float _breakForce = 2;
+    [SerializeField] private float _breakForce = 5;
     [SerializeField] private float _collisionMultiplier = 100;
     [SerializeField] private bool _broken;
 
@@ -42,6 +42,8 @@ public class Breakable : MonoBehaviour
         foreach (var rb in rbs)
         {
             rb.AddExplosionForce(collision.relativeVelocity.magnitude * _collisionMultiplier, collision.contacts[0].point, 2);
+            Vector3 randomScatter = new Vector3(Random.Range(-1f, 1f), Random.Range(0.5f, 2f), Random.Range(-1f, 1f));
+            rb.AddForce(randomScatter * _collisionMultiplier * 0.5f, ForceMode.Impulse);
         }
 
         Destroy(gameObject);
