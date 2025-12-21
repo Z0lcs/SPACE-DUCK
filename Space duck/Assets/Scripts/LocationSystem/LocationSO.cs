@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "LocationSO")]
+[CreateAssetMenu(fileName = "LocationSO", menuName = "Create SO/LocationSO")]
 public class LocationSO : ScriptableObject
 {
     public string locationID;

@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c9784107a245614a9bb0d59e8da971b, type: 3}
   m_Name: Test hely
   m_EditorClassIdentifier: 
-  locationID: hely
-  displayName: Teszt hely
+  locationID: Teszthely
+  displayName: Teszt hely a questhez

@@ -3,38 +3,60 @@ using TMPro;
 
 public class QuestLogUI : MonoBehaviour
 {
-    [SerializeField] private QuestManager questManager;
+    [Header("UI Panels")]
+    [SerializeField] private GameObject detailsPanel;
+
+    [Header("Texts")]
     [SerializeField] private TMP_Text questNameText;
     [SerializeField] private TMP_Text questDescriptionText;
+
+    [Header("Objectives")]
     [SerializeField] private QuestObjectiveSlot[] objectiveSlots;
 
     private QuestSO questSO;
 
-    public void HandleQuestClicked(QuestSO questSO)
+    void Start()
     {
-        this.questSO = questSO;
+        if (detailsPanel != null) detailsPanel.SetActive(false);
+    }
+
+    void Update()
+    {
+        if (questSO != null && detailsPanel.activeInHierarchy)
+        {
+            DisplayObjectives();
+        }
+    }
+
+    private void OnEnable()
+    {
+        DisplayObjectives();
+    }
+
+    public void HandleQuestClicked(QuestSO clickedQuest)
+    {
+        this.questSO = clickedQuest;
+
+        if (detailsPanel != null) detailsPanel.SetActive(true);
 
         questNameText.text = questSO.questName;
         questDescriptionText.text = questSO.questDescription;
-        
+
         DisplayObjectives();
-        foreach (var objective in questSO.questObjectives)
-        {
-            Debug.Log($"Objective: {objective.description} => {questManager.GetProgressText(questSO, objective)}");
-        } 
     }
 
     private void DisplayObjectives()
     {
+        if (questSO == null || QuestManager.Instance == null) return;
+
         for (int i = 0; i < objectiveSlots.Length; i++)
         {
             if (i < questSO.questObjectives.Count)
             {
                 var objective = questSO.questObjectives[i];
-                questManager.UpdateObjectiveProgress(questSO, objective);
 
-                int currentAmount = questManager.GetCurrentAmount(questSO, objective);
-                string progressText = questManager.GetProgressText(questSO, objective);
+                int currentAmount = QuestManager.Instance.GetCurrentAmount(questSO, objective);
+                string progressText = QuestManager.Instance.GetProgressText(questSO, objective);
                 bool isComplete = currentAmount >= objective.requiredAmount;
 
                 objectiveSlots[i].gameObject.SetActive(true);
@@ -45,5 +67,11 @@ public class QuestLogUI : MonoBehaviour
                 objectiveSlots[i].gameObject.SetActive(false);
             }
         }
+    }
+
+    public void ResetSelection()
+    {
+        questSO = null;
+        if (detailsPanel != null) detailsPanel.SetActive(false);
     }
 }
