@@ -11,50 +11,60 @@ public class QuestManager : MonoBehaviour
         {
             questProgress[questSO] = new Dictionary<QuestObjective, int>();
         }
+
         var progressDict = questProgress[questSO];
-        int newAmount = 0;
-         
+
+        if (!progressDict.ContainsKey(objective))
+        {
+            progressDict[objective] = 0;
+        }
+
         if (objective.targetItem != null)
         {
-            //newAmount = InventoryManager.Instance.GetItemQuantity(objective.targetItem);
+            // Példa: progressDict[objective] = InventoryManager.Instance.GetItemQuantity(objective.targetItem);
         }
+
         else if (objective.targetLocation != null && GameManager.Instance.LocationTrack.HasVisited(objective.targetLocation))
         {
-            newAmount=objective.requiredAmount;
+            progressDict[objective] = objective.requiredAmount;
         }
+
         else if (objective.targetNPC != null && GameManager.Instance.DialogueHistoryTracker.HasSpokenWith(objective.targetNPC))
         {
-            newAmount=objective.requiredAmount;
+            progressDict[objective] = objective.requiredAmount;
         }
 
-        progressDict[objective]=newAmount;
-
-
-
-        if (!questProgress[questSO].ContainsKey(objective))
+        else if (objective.targetKey != null)
         {
-            questProgress[questSO][objective] = 0;
+            if (progressDict[objective] < objective.requiredAmount && objective.targetKey.IsAnyKeyPressed())
+            {
+                progressDict[objective] += 1;
+            }
         }
-        questProgress[questSO][objective] += 1; 
     }
+
     public string GetProgressText(QuestSO questSO, QuestObjective objective)
     {
-        int currentAmount =GetCurrentAmount(questSO, objective);
+        int currentAmount = GetCurrentAmount(questSO, objective);
 
         if (currentAmount >= objective.requiredAmount)
             return "Complete ";
 
-        else if (objective.targetItem != null)
+        if (objective.targetItem != null || objective.targetKey != null)
             return $"{currentAmount}/{objective.requiredAmount}";
-        else
-            return "In progress";
+
+        return "In progress";
     }
 
     public int GetCurrentAmount(QuestSO questSO, QuestObjective objective)
     {
         if (questProgress.TryGetValue(questSO, out var objectiveDictionary))
+        {
             if (objectiveDictionary.TryGetValue(objective, out int amount))
+            {
                 return amount;
+            }
+        }
         return 0;
-    }   
+    }
 }

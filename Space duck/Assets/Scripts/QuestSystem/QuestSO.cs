@@ -22,6 +22,7 @@ public class QuestObjective
     public InventoryItemSO targetItem => target as InventoryItemSO;
     public ActorSO targetNPC=> target as ActorSO;
     public LocationSO targetLocation => target as LocationSO;
+    public KeySO targetKey => target as KeySO;
 
     public int requiredAmount;
 }
