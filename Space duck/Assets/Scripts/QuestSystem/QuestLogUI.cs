@@ -1,17 +1,77 @@
 using UnityEngine;
+using TMPro;
 
 public class QuestLogUI : MonoBehaviour
 {
-    [SerializeField] private QuestManager questManager;
+    [Header("UI Panels")]
+    [SerializeField] private GameObject detailsPanel;
 
-    public void HandleQuestClicked(QuestSO questSO)
+    [Header("Texts")]
+    [SerializeField] private TMP_Text questNameText;
+    [SerializeField] private TMP_Text questDescriptionText;
+
+    [Header("Objectives")]
+    [SerializeField] private QuestObjectiveSlot[] objectiveSlots;
+
+    private QuestSO questSO;
+
+    void Start()
     {
-        Debug.Log($"===Quest clicked: {questSO.questName}===");
+        if (detailsPanel != null) detailsPanel.SetActive(false);
+    }
 
-        foreach (var objective in questSO.questObjectives)
+    void Update()
+    {
+        if (questSO != null && detailsPanel.activeInHierarchy)
         {
-            questManager.UpdateObjectiveProgress(questSO, objective);
-            Debug.Log($"Objective: {objective.description} => {questManager.GetProgressText(questSO, objective)}");
-        } 
+            DisplayObjectives();
+        }
+    }
+
+    private void OnEnable()
+    {
+        DisplayObjectives();
+    }
+
+    public void HandleQuestClicked(QuestSO clickedQuest)
+    {
+        this.questSO = clickedQuest;
+
+        if (detailsPanel != null) detailsPanel.SetActive(true);
+
+        questNameText.text = questSO.questName;
+        questDescriptionText.text = questSO.questDescription;
+
+        DisplayObjectives();
+    }
+
+    private void DisplayObjectives()
+    {
+        if (questSO == null || QuestManager.Instance == null) return;
+
+        for (int i = 0; i < objectiveSlots.Length; i++)
+        {
+            if (i < questSO.questObjectives.Count)
+            {
+                var objective = questSO.questObjectives[i];
+
+                int currentAmount = QuestManager.Instance.GetCurrentAmount(questSO, objective);
+                string progressText = QuestManager.Instance.GetProgressText(questSO, objective);
+                bool isComplete = currentAmount >= objective.requiredAmount;
+
+                objectiveSlots[i].gameObject.SetActive(true);
+                objectiveSlots[i].RefreshObjectives(objective.description, progressText, isComplete);
+            }
+            else
+            {
+                objectiveSlots[i].gameObject.SetActive(false);
+            }
+        }
+    }
+
+    public void ResetSelection()
+    {
+        questSO = null;
+        if (detailsPanel != null) detailsPanel.SetActive(false);
     }
 }

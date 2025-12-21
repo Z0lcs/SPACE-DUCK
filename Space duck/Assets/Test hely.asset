@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f421ba9b15377f448bc5bd279a39bd0, type: 3}
-  m_Name: Quest3
+  m_Script: {fileID: 11500000, guid: 1c9784107a245614a9bb0d59e8da971b, type: 3}
+  m_Name: Test hely
   m_EditorClassIdentifier: 
-  questName: Kis kacsa
-  questDescription: 
-  questLevel: 67
+  locationID: Teszthely
+  displayName: Teszt hely a questhez

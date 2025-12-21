@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "QuestSO", menuName = "QuestSO")]
+[CreateAssetMenu(fileName = "QuestSO", menuName = "Create SO/QuestSO")]
 public class QuestSO : ScriptableObject
 {
     public string questName;
     [TextArea] public string questDescription;
-    public int questLevel;
+    //public int questLevel;
 
     public List<QuestObjective> questObjectives;
 }
@@ -22,6 +22,7 @@ public class QuestObjective
     public InventoryItemSO targetItem => target as InventoryItemSO;
     public ActorSO targetNPC=> target as ActorSO;
     public LocationSO targetLocation => target as LocationSO;
+    public KeySO targetKey => target as KeySO;
 
     public int requiredAmount;
 }

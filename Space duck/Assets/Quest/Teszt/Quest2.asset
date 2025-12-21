@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f421ba9b15377f448bc5bd279a39bd0, type: 3}
-  m_Name: Quest1
+  m_Name: Quest2
   m_EditorClassIdentifier: 
-  questName: Ez egy quest
-  questDescription: 
-  questLevel: 10
+  questName: "Ez egy m\xE1sik "
+  questDescription: gfdagadfgadfgadsfg
+  questObjectives: []

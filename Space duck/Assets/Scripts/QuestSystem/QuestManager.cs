@@ -3,41 +3,105 @@ using UnityEngine;
 
 public class QuestManager : MonoBehaviour
 {
-    private Dictionary<QuestSO, Dictionary<QuestObjective, int>> getProgress = new();
+    public static QuestManager Instance { get; private set; }
+
+    private Dictionary<QuestSO, Dictionary<QuestObjective, int>> questProgress = new();
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(this); 
+            return;
+        }
+    }
+
+    private void Update()
+    {
+        if (QuestInputTracker.Instance != null)
+        {
+            foreach (QuestSO quest in QuestInputTracker.Instance.activeQuests)
+            {
+                foreach (QuestObjective objective in quest.questObjectives)
+                {
+                    if (objective.targetLocation != null)
+                    {
+                        UpdateObjectiveProgress(quest, objective);
+                    }
+                }
+            }
+        }
+    }
 
     public void UpdateObjectiveProgress(QuestSO questSO, QuestObjective objective)
     {
-        if (!getProgress.ContainsKey(questSO))
-        {
-            getProgress[questSO] = new Dictionary<QuestObjective, int>();
-        }
-        var progressDict = getProgress[questSO];
-        int newAmount = 0;
-         
-        if (objective.targetItem != null)
-        {
-            //newAmount = InventoryManager.Instance.GetItemQuantity(objective.targetItem);
-        }
-        
+        if (questSO == null || objective == null) return;
 
-
-
-        if (!getProgress[questSO].ContainsKey(objective))
+        if (!questProgress.ContainsKey(questSO))
         {
-            getProgress[questSO][objective] = 0;
+            questProgress[questSO] = new Dictionary<QuestObjective, int>();
         }
-        getProgress[questSO][objective] += 1; 
+
+        var progressDict = questProgress[questSO];
+
+        if (!progressDict.ContainsKey(objective))
+        {
+            progressDict[objective] = 0;
+        }
+
+        if (objective.targetLocation != null && GameManager.Instance.LocationTrack.HasVisited(objective.targetLocation))
+        {
+            if (progressDict[objective] != objective.requiredAmount)
+            {
+                progressDict[objective] = objective.requiredAmount;
+                Debug.Log($"<color=green>[QUEST]</color> Helyszín elérve: {objective.targetLocation.displayName}");
+            }
+        }
+        else if (objective.targetNPC != null && GameManager.Instance.DialogueHistoryTracker.HasSpokenWith(objective.targetNPC))
+        {
+            if (progressDict[objective] != objective.requiredAmount)
+            {
+                progressDict[objective] = objective.requiredAmount;
+                Debug.Log($"<color=green>[QUEST]</color> Beszéltél vele: {objective.targetNPC.name}");
+            }
+        }
+        else if (objective.targetKey != null)
+        {
+            if (progressDict[objective] < objective.requiredAmount && objective.targetKey.IsAnyKeyPressed())
+            {
+                progressDict[objective] += 1;
+                Debug.Log($"<color=cyan>[QUEST]</color> {questSO.questName} haladás: {progressDict[objective]}/{objective.requiredAmount}");
+            }
+        }
     }
+
     public string GetProgressText(QuestSO questSO, QuestObjective objective)
     {
-        int currentAmount = 0;
+        int currentAmount = GetCurrentAmount(questSO, objective);
 
         if (currentAmount >= objective.requiredAmount)
-            return "Complete ";
+            return "Kész";
 
-        else if (objective.targetItem != null)
+        if (objective.targetItem != null || objective.targetKey != null)
             return $"{currentAmount}/{objective.requiredAmount}";
-        else
-            return "In progress";
+
+        return "Folyamatban";
+    }
+
+    public int GetCurrentAmount(QuestSO questSO, QuestObjective objective)
+    {
+        if (questProgress.TryGetValue(questSO, out var objectiveDictionary))
+        {
+            if (objectiveDictionary.TryGetValue(objective, out int amount))
+            {
+                return amount;
+            }
+        }
+        return 0;
     }
 }
