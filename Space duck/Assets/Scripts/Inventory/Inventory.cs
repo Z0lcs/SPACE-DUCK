@@ -32,6 +32,8 @@ public class Inventory : MonoBehaviour
     private Slot dragedSlot = null;
     private bool isDragging = false;
 
+    //Zoli
+    public GameObject hudCanvas;
     private void Awake()
     {
         inventorySlots.AddRange(inventorySlotParent.GetComponentsInChildren<Slot>());
@@ -43,16 +45,36 @@ public class Inventory : MonoBehaviour
 
     void Update()
     {
-        // TAB új input rendszer
+        // TAB bevitele
         if (Keyboard.current.tabKey.wasPressedThisFrame)
         {
-            container.SetActive(!container.activeInHierarchy);
-            Cursor.lockState = Cursor.lockState == CursorLockMode.Locked ? CursorLockMode.None : CursorLockMode.Locked;
-            Cursor.visible = !Cursor.visible;
+            bool isInventoryOpen = !container.activeInHierarchy;
+            container.SetActive(isInventoryOpen);
+
+            if (isInventoryOpen)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                Time.timeScale = 0f; 
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                Time.timeScale = 1f; 
+            }
+
+            if (hudCanvas != null)
+            {
+                hudCanvas.SetActive(!isInventoryOpen);
+            }
         }
 
-        DetectLookAtItem();
-        pickup();
+        if (Time.timeScale > 0)
+        {
+            DetectLookAtItem();
+            pickup();
+        }
 
         StartDrag();
         UpdateDragItemPosition();
@@ -61,9 +83,7 @@ public class Inventory : MonoBehaviour
         HandleHotbarSelection();
         HandleDropEquippedItem();
         UpdateHotbarOpacity();
-
         HandleRightClickSplit();
-
     }
 
     public void AddItem(InventoryItemSO itemToAdd, int amount)
