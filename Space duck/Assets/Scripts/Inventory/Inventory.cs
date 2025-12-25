@@ -14,10 +14,13 @@ public class Inventory : MonoBehaviour
     public Image dragIcon;
 
     public float pickupRange = 10f;
-    //private Item lookedAtItem = null;
     public Material highlightMaterial;
     private Material originalMaterial;
     private Renderer lookedAtRenderer;
+
+    // TPP FIX: Ezzel a maszkkal mondjuk meg a Raycastnak, hogy ne akadjon el a Playerben
+    [Header("TPP & Raycast Settings")]
+    public LayerMask excludeLayers;
 
     private int equippedHotbarIndex = 0;
     public float equppedOpacity = 0.9f;
@@ -32,8 +35,8 @@ public class Inventory : MonoBehaviour
     private Slot dragedSlot = null;
     private bool isDragging = false;
 
-    //Zoli
     public GameObject hudCanvas;
+
     private void Awake()
     {
         inventorySlots.AddRange(inventorySlotParent.GetComponentsInChildren<Slot>());
@@ -55,13 +58,13 @@ public class Inventory : MonoBehaviour
             {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                Time.timeScale = 0f; 
+                Time.timeScale = 0f;
             }
             else
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
-                Time.timeScale = 1f; 
+                Time.timeScale = 1f;
             }
 
             if (hudCanvas != null)
@@ -73,7 +76,7 @@ public class Inventory : MonoBehaviour
         if (Time.timeScale > 0)
         {
             DetectLookAtItem();
-            pickup();
+            pickup(); // Most már paraméter nélkül hívjuk, mert a Raycastot belül kezeli
         }
 
         StartDrag();
@@ -86,6 +89,64 @@ public class Inventory : MonoBehaviour
         HandleRightClickSplit();
     }
 
+    // --- MÓDOSÍTOTT DETECT (TPP kompatibilis) ---
+    private void DetectLookAtItem()
+    {
+        if (lookedAtRenderer != null)
+        {
+            lookedAtRenderer.material = originalMaterial;
+            lookedAtRenderer = null;
+            originalMaterial = null;
+        }
+
+        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+
+        // A ~excludeLayers azt jelenti: Minden réteget figyelj, kivéve amit bepipáltál
+        if (Physics.Raycast(ray, out RaycastHit hit, pickupRange, ~excludeLayers))
+        {
+            Item item = hit.collider.GetComponent<Item>();
+
+            if (item != null)
+            {
+                Renderer rend = item.GetComponent<Renderer>();
+                if (rend != null)
+                {
+                    originalMaterial = rend.material;
+                    rend.material = highlightMaterial;
+                    lookedAtRenderer = rend;
+                }
+            }
+        }
+    }
+
+    // --- MÓDOSÍTOTT PICKUP (Stabilabb TPP felvétel) ---
+    private void pickup()
+    {
+        if (Keyboard.current.eKey.wasPressedThisFrame)
+        {
+            Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+
+            if (Physics.Raycast(ray, out RaycastHit hit, pickupRange, ~excludeLayers))
+            {
+                Item item = hit.collider.GetComponent<Item>();
+                if (item != null)
+                {
+                    AddItem(item.item, item.amount);
+
+                    // Ha töröljük az objektumot, a kijelölést is nullázzuk le azonnal
+                    if (lookedAtRenderer != null && lookedAtRenderer.gameObject == item.gameObject)
+                    {
+                        lookedAtRenderer = null;
+                    }
+
+                    Destroy(item.gameObject);
+                    EquipHandItem();
+                }
+            }
+        }
+    }
+
+    // --- ADDMITEM ÉS A TÖBBI FÜGGVÉNY VÁLTOZATLAN MARAD ---
     public void AddItem(InventoryItemSO itemToAdd, int amount)
     {
         int remaning = amount;
@@ -127,7 +188,7 @@ public class Inventory : MonoBehaviour
 
         if (remaning > 0)
         {
-            Debug.Log("Inventory tele van, nem tudjuk hozzáadni " + remaning + " ennyit: " + itemToAdd.itemName);
+            Debug.Log("Inventory tele van: " + itemToAdd.itemName);
         }
     }
 
@@ -136,7 +197,6 @@ public class Inventory : MonoBehaviour
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
             Slot hovered = GetHoveredSlot();
-
             if (hovered != null && hovered.HasItem())
             {
                 dragedSlot = hovered;
@@ -153,15 +213,13 @@ public class Inventory : MonoBehaviour
         if (Mouse.current.leftButton.wasReleasedThisFrame && isDragging)
         {
             Slot hoverd = GetHoveredSlot();
-
             if (hoverd != null)
             {
                 HandleDrop(dragedSlot, hoverd);
-
-                dragIcon.enabled = false;
-                dragedSlot = null;
-                isDragging = false;
             }
+            dragIcon.enabled = false;
+            dragedSlot = null;
+            isDragging = false;
         }
     }
 
@@ -169,8 +227,7 @@ public class Inventory : MonoBehaviour
     {
         foreach (Slot s in allSlots)
         {
-            if (s.hovering)
-                return s;
+            if (s.hovering) return s;
         }
         return null;
     }
@@ -179,27 +236,20 @@ public class Inventory : MonoBehaviour
     {
         if (from == to) return;
 
-        //Stacking
         if (to.HasItem() && to.GetItem() == from.GetItem())
         {
             int max = to.GetItem().maxStackSize;
             int space = max - to.GetAmount();
-
             if (space > 0)
             {
                 int move = Mathf.Min(space, from.GetAmount());
-
                 to.SetItem(to.GetItem(), to.GetAmount() + move);
                 from.SetItem(from.GetItem(), from.GetAmount() - move);
-
-                if (from.GetAmount() <= 0)
-                    from.ClearSlot();
-
+                if (from.GetAmount() <= 0) from.ClearSlot();
                 return;
             }
         }
 
-        //Swap
         if (to.HasItem())
         {
             InventoryItemSO tempItem = to.GetItem();
@@ -209,7 +259,6 @@ public class Inventory : MonoBehaviour
             return;
         }
 
-        //Empty slot
         to.SetItem(from.GetItem(), from.GetAmount());
         from.ClearSlot();
     }
@@ -219,48 +268,6 @@ public class Inventory : MonoBehaviour
         if (isDragging)
         {
             dragIcon.transform.position = Mouse.current.position.ReadValue();
-        }
-    }
-
-    private void pickup()
-    {
-        if (lookedAtRenderer != null && Keyboard.current.eKey.wasPressedThisFrame)
-        {
-            Item item = lookedAtRenderer.GetComponent<Item>();
-            if (item != null)
-            {
-                AddItem(item.item, item.amount);
-                Destroy(item.gameObject);
-                EquipHandItem();
-            }
-        }
-    }
-
-    private void DetectLookAtItem()
-    {
-        if (lookedAtRenderer != null)
-        {
-            lookedAtRenderer.material = originalMaterial;
-            lookedAtRenderer = null;
-            originalMaterial = null;
-        }
-
-        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, pickupRange))
-        {
-            Item item = hit.collider.GetComponent<Item>();
-
-            if (item != null)
-            {
-                Renderer rend = item.GetComponent<Renderer>();
-                if (rend != null)
-                {
-                    originalMaterial = rend.material;
-                    rend.material = highlightMaterial;
-                    lookedAtRenderer = rend;
-                }
-            }
         }
     }
 
@@ -282,7 +289,6 @@ public class Inventory : MonoBehaviour
     {
         for (int i = 0; i < 6; i++)
         {
-            // Új input rendszer
             if (Keyboard.current[(Key)((int)Key.Digit1 + i)].wasPressedThisFrame)
             {
                 equippedHotbarIndex = i;
@@ -297,20 +303,13 @@ public class Inventory : MonoBehaviour
         if (!Keyboard.current.qKey.wasPressedThisFrame) return;
 
         Slot equippedSlot = hotbarSlots[equippedHotbarIndex];
-
         if (!equippedSlot.HasItem()) return;
 
         InventoryItemSO itemSO = equippedSlot.GetItem();
         GameObject prefab = itemSO.itemPrefab;
-
         if (prefab == null) return;
 
-        GameObject dropped = Instantiate(
-            prefab,
-            Camera.main.transform.position + Camera.main.transform.forward,
-            Quaternion.identity
-        );
-
+        GameObject dropped = Instantiate(prefab, Camera.main.transform.position + Camera.main.transform.forward * 2f, Quaternion.identity);
         Item item = dropped.GetComponent<Item>();
         item.item = itemSO;
         item.amount = equippedSlot.GetAmount();
@@ -339,30 +338,21 @@ public class Inventory : MonoBehaviour
         if (Mouse.current.rightButton.wasPressedThisFrame)
         {
             Slot hovered = GetHoveredSlot();
-
             if (hovered != null && hovered.HasItem() && hovered.GetAmount() > 1)
             {
                 int originalAmount = hovered.GetAmount();
                 int half = originalAmount / 2;
 
-                
                 foreach (Slot slot in allSlots)
                 {
                     if (!slot.HasItem())
                     {
-                        
                         hovered.SetItem(hovered.GetItem(), originalAmount - half);
-
-                        
                         slot.SetItem(hovered.GetItem(), half);
-
                         return;
                     }
                 }
-
-                Debug.Log("Nincs üres slot a stack felezéséhez!");
             }
         }
     }
-
 }

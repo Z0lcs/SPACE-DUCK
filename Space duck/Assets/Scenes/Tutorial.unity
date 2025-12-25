@@ -2651,6 +2651,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Kacsa
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 77c2ee5c215e5274980273bc18eb1bd7, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5066,7 +5070,7 @@ GameObject:
   - component: {fileID: 810441891}
   - component: {fileID: 810441889}
   - component: {fileID: 810441888}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -6455,7 +6459,7 @@ GameObject:
   m_Component:
   - component: {fileID: 975561909}
   - component: {fileID: 975561910}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Audio Source
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8302,7 +8306,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1179362090}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Hand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8343,7 +8347,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1195368261}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Orientation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14509,8 +14513,11 @@ MonoBehaviour:
   inventorySlotParent: {fileID: 951305808}
   container: {fileID: 1971117168}
   dragIcon: {fileID: 203379617}
-  pickupRange: 3
+  pickupRange: 10
   highlightMaterial: {fileID: 0}
+  excludeLayers:
+    serializedVersion: 2
+    m_Bits: 8
   equppedOpacity: 0.9
   normalOpacity: 0.58
   hand: {fileID: 1179362090}
