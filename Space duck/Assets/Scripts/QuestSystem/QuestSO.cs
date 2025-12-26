@@ -2,12 +2,11 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "QuestSO", menuName = "Create SO/QuestSO")]
+[CreateAssetMenu(fileName = "QuestSO", menuName = "Create SO/New quest")]
 public class QuestSO : ScriptableObject
 {
     public string questName;
     [TextArea] public string questDescription;
-    //public int questLevel;
 
     public List<QuestObjective> questObjectives;
 }

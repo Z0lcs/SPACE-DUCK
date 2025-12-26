@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public partial class Inventory : MonoBehaviour
 {
+    public static Inventory Instance { get; private set; }
+
     [Header("Items & Prefabs")]
     public InventoryItemSO woodItem;
     public InventoryItemSO axeItem;
@@ -39,6 +41,8 @@ public partial class Inventory : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance == null) Instance = this;
+
         inventorySlots.AddRange(inventorySlotParent.GetComponentsInChildren<Slot>());
         hotbarSlots.AddRange(hotbarObj.GetComponentsInChildren<Slot>());
 

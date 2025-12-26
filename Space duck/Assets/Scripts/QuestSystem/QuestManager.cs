@@ -29,7 +29,7 @@ public class QuestManager : MonoBehaviour
             {
                 foreach (QuestObjective objective in quest.questObjectives)
                 {
-                    if (objective.targetLocation != null)
+                    if (objective.targetLocation != null || objective.targetItem != null)
                     {
                         UpdateObjectiveProgress(quest, objective);
                     }
@@ -76,6 +76,16 @@ public class QuestManager : MonoBehaviour
             {
                 progressDict[objective] += 1;
                 Debug.Log($"<color=cyan>[QUEST]</color> {questSO.questName} haladás: {progressDict[objective]}/{objective.requiredAmount}");
+            }
+        }
+        else if (objective.targetItem != null)
+        {
+            int currentCount = Inventory.Instance.GetItemQuantity(objective.targetItem);
+
+            if (progressDict[objective] != currentCount)
+            {
+                progressDict[objective] = Mathf.Min(currentCount, objective.requiredAmount);
+                Debug.Log($"<color=orange>[QUEST]</color> {objective.targetItem.itemName} mennyiség: {progressDict[objective]}/{objective.requiredAmount}");
             }
         }
     }

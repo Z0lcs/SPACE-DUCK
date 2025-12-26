@@ -464,7 +464,7 @@ PrefabInstance:
     - target: {fileID: 193867331931236274, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
       propertyPath: currentQuest
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 11400000, guid: 4cff1d85d11a1814591508d700358828, type: 2}
     - target: {fileID: 1781313411038459259, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
       propertyPath: m_text
       value: Szar VSC
@@ -475,7 +475,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2553807826475619590, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6917983163269799173, guid: d2e75cfdd61719740b0f6f4c5f9b9dcf, type: 3}
       propertyPath: m_AnchorMax.y
@@ -6375,6 +6375,7 @@ MonoBehaviour:
   activeQuests:
   - {fileID: 11400000, guid: 17820f2925bff6b44a1bc93e016e1b3b, type: 2}
   - {fileID: 11400000, guid: 383a03d24ed7b4746b3f6e4782f22463, type: 2}
+  - {fileID: 11400000, guid: 4cff1d85d11a1814591508d700358828, type: 2}
 --- !u!224 &811342342 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4477043850196476296, guid: 564222dbf8b72f54b9187379fe8776b3, type: 3}
