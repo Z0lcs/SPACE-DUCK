@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +7,8 @@ public class QuestManager : MonoBehaviour
     public static QuestManager Instance { get; private set; }
 
     private Dictionary<QuestSO, Dictionary<QuestObjective, int>> questProgress = new();
-
+    
+    public static event Action<QuestSO> OnQuestCompleted;
     private void Awake()
     {
         if (Instance == null)
@@ -20,6 +22,8 @@ public class QuestManager : MonoBehaviour
             return;
         }
     }
+
+    
     public void UpdateObjectiveProgress(QuestSO questSO, QuestObjective objective)
     {
         if (questSO == null || objective == null) return;
@@ -60,9 +64,33 @@ public class QuestManager : MonoBehaviour
             string status = (progressDict[objective] >= objective.requiredAmount) ? "TELJESÍTVE" : "HALADÁS";
             Debug.Log($"<color=yellow>[QUEST UPDATE]</color> {questSO.questName} -> {objective.description}: " +
                       $"{progressDict[objective]}/{objective.requiredAmount} ({status})");
+
+            CheckIfQuestIsReady(questSO);
         }
     }
-    
+    private void CheckIfQuestIsReady(QuestSO questSO)
+    {
+        bool allObjectivesDone = true;
+
+        foreach (var objective in questSO.questObjectives)
+        {
+            if (GetCurrentAmount(questSO, objective) < objective.requiredAmount)
+            {
+                allObjectivesDone = false;
+                break;
+            }
+        }
+
+        if (allObjectivesDone)
+        {
+            CompleteQuest(questSO);
+        }
+    }
+    public void CompleteQuest(QuestSO questSO)
+    {
+        Debug.Log($"CompleteQuest meghívva: {questSO.questName}");
+        OnQuestCompleted?.Invoke(questSO);
+    }
     public string GetProgressText(QuestSO questSO, QuestObjective objective)
     {
         int currentAmount = GetCurrentAmount(questSO, objective);
