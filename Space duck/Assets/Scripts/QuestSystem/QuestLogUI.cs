@@ -22,7 +22,34 @@ public class QuestLogUI : MonoBehaviour
 
     private void OnEnable()
     {
+        QuestSlotLog[] allSlots = GetComponentsInChildren<QuestSlotLog>(true);
+        foreach (QuestSlotLog slot in allSlots)
+        {
+            if (slot.currentQuest != null && QuestManager.Instance.IsQuestCompleted(slot.currentQuest))
+            {
+                slot.gameObject.SetActive(false);
+            }
+        }
+
+        if (questSO != null && QuestManager.Instance.IsQuestCompleted(questSO))
+        {
+            ResetSelection();
+        }
+
+        QuestManager.OnQuestCompleted += HandleQuestFinished;
         DisplayObjectives();
+    }
+    private void OnDisable()
+    {
+        QuestManager.OnQuestCompleted -= HandleQuestFinished;
+    }
+
+    private void HandleQuestFinished(QuestSO completedQuest)
+    {
+        if (this.questSO == completedQuest)
+        {
+            ResetSelection();
+        }
     }
 
     public void HandleQuestClicked(QuestSO clickedQuest)

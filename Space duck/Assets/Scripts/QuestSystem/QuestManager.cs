@@ -7,7 +7,7 @@ public class QuestManager : MonoBehaviour
     public static QuestManager Instance { get; private set; }
 
     private Dictionary<QuestSO, Dictionary<QuestObjective, int>> questProgress = new();
-    
+    private HashSet<QuestSO> completedQuests = new();
     public static event Action<QuestSO> OnQuestCompleted;
     private void Awake()
     {
@@ -27,6 +27,7 @@ public class QuestManager : MonoBehaviour
     public void UpdateObjectiveProgress(QuestSO questSO, QuestObjective objective)
     {
         if (questSO == null || objective == null) return;
+        if (completedQuests.Contains(questSO)) return;
 
         if (!questProgress.ContainsKey(questSO))
             questProgress[questSO] = new Dictionary<QuestObjective, int>();
@@ -83,13 +84,28 @@ public class QuestManager : MonoBehaviour
 
         if (allObjectivesDone)
         {
+            Debug.Log("Minden cél kész, hívom a CompleteQuest-et!"); 
             CompleteQuest(questSO);
         }
     }
     public void CompleteQuest(QuestSO questSO)
     {
+        if (questSO == null || completedQuests.Contains(questSO)) return;
+
         Debug.Log($"CompleteQuest meghívva: {questSO.questName}");
+
+        completedQuests.Add(questSO);
+
+        if (questProgress.ContainsKey(questSO))
+        {
+            questProgress.Remove(questSO);
+        }
+        Debug.Log($"[QUEST COMPLETED] {questSO.questName} véglegesítve és törölve.");
         OnQuestCompleted?.Invoke(questSO);
+    }
+    public bool IsQuestCompleted(QuestSO questSO)
+    {
+        return completedQuests.Contains(questSO);
     }
     public string GetProgressText(QuestSO questSO, QuestObjective objective)
     {
