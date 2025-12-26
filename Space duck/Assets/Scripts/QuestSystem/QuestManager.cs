@@ -20,76 +20,49 @@ public class QuestManager : MonoBehaviour
             return;
         }
     }
-
-    private void Update()
-    {
-        if (QuestInputTracker.Instance != null)
-        {
-            foreach (QuestSO quest in QuestInputTracker.Instance.activeQuests)
-            {
-                foreach (QuestObjective objective in quest.questObjectives)
-                {
-                    if (objective.targetLocation != null || objective.targetItem != null)
-                    {
-                        UpdateObjectiveProgress(quest, objective);
-                    }
-                }
-            }
-        }
-    }
-
     public void UpdateObjectiveProgress(QuestSO questSO, QuestObjective objective)
     {
         if (questSO == null || objective == null) return;
 
         if (!questProgress.ContainsKey(questSO))
-        {
             questProgress[questSO] = new Dictionary<QuestObjective, int>();
-        }
 
         var progressDict = questProgress[questSO];
 
         if (!progressDict.ContainsKey(objective))
-        {
             progressDict[objective] = 0;
-        }
 
-        if (objective.targetLocation != null && GameManager.Instance.LocationTrack.HasVisited(objective.targetLocation))
+        int oldProgress = progressDict[objective];
+
+        if (objective.targetLocation != null)
         {
-            if (progressDict[objective] != objective.requiredAmount)
-            {
+            if (GameManager.Instance.LocationTrack.HasVisited(objective.targetLocation))
                 progressDict[objective] = objective.requiredAmount;
-                Debug.Log($"<color=green>[QUEST]</color> Helyszín elérve: {objective.targetLocation.displayName}");
-            }
         }
-        else if (objective.targetNPC != null && GameManager.Instance.DialogueHistoryTracker.HasSpokenWith(objective.targetNPC))
+        else if (objective.targetNPC != null)
         {
-            if (progressDict[objective] != objective.requiredAmount)
-            {
+            if (GameManager.Instance.DialogueHistoryTracker.HasSpokenWith(objective.targetNPC))
                 progressDict[objective] = objective.requiredAmount;
-                Debug.Log($"<color=green>[QUEST]</color> Beszéltél vele: {objective.targetNPC.name}");
-            }
         }
         else if (objective.targetKey != null)
         {
             if (progressDict[objective] < objective.requiredAmount && objective.targetKey.IsAnyKeyPressed())
-            {
                 progressDict[objective] += 1;
-                Debug.Log($"<color=cyan>[QUEST]</color> {questSO.questName} haladás: {progressDict[objective]}/{objective.requiredAmount}");
-            }
         }
         else if (objective.targetItem != null)
         {
             int currentCount = Inventory.Instance.GetItemQuantity(objective.targetItem);
+            progressDict[objective] = Mathf.Min(currentCount, objective.requiredAmount);
+        }
 
-            if (progressDict[objective] != currentCount)
-            {
-                progressDict[objective] = Mathf.Min(currentCount, objective.requiredAmount);
-                Debug.Log($"<color=orange>[QUEST]</color> {objective.targetItem.itemName} mennyiség: {progressDict[objective]}/{objective.requiredAmount}");
-            }
+        if (progressDict[objective] != oldProgress)
+        {
+            string status = (progressDict[objective] >= objective.requiredAmount) ? "TELJESÍTVE" : "HALADÁS";
+            Debug.Log($"<color=yellow>[QUEST UPDATE]</color> {questSO.questName} -> {objective.description}: " +
+                      $"{progressDict[objective]}/{objective.requiredAmount} ({status})");
         }
     }
-
+    
     public string GetProgressText(QuestSO questSO, QuestObjective objective)
     {
         int currentAmount = GetCurrentAmount(questSO, objective);

@@ -92,6 +92,21 @@ public partial class Inventory : MonoBehaviour
         return total;
     }
 
+    private void NotifyQuestManagerOfInventoryChange()
+    {
+        if (QuestManager.Instance != null && QuestInputTracker.Instance != null)
+        {
+            foreach (QuestSO quest in QuestInputTracker.Instance.activeQuests)
+            {
+                foreach (QuestObjective obj in quest.questObjectives)
+                {
+                    if (obj.targetItem != null)
+                        QuestManager.Instance.UpdateObjectiveProgress(quest, obj);
+                }
+            }
+        }
+    }
+
     private void HandleInventoryToggle()
     {
         if (Keyboard.current.tabKey.wasPressedThisFrame)
@@ -140,6 +155,7 @@ public partial class Inventory : MonoBehaviour
         if (currentlyLookedAtItem != null)
         {
             AddItem(currentlyLookedAtItem.item, currentlyLookedAtItem.amount);
+            NotifyQuestManagerOfInventoryChange();
             lookedAtRenderer = null;
             Destroy(currentlyLookedAtItem.gameObject);
             currentlyLookedAtItem = null;
@@ -300,6 +316,7 @@ public partial class Inventory : MonoBehaviour
             else from.ClearSlot();
         }
         EquipHandItem();
+        NotifyQuestManagerOfInventoryChange();
     }
 
     private void HandleRightClickSplit()
@@ -319,6 +336,7 @@ public partial class Inventory : MonoBehaviour
                         break;
                     }
                 }
+                NotifyQuestManagerOfInventoryChange();
             }
         }
     }

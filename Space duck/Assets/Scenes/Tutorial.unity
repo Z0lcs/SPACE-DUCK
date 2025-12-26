@@ -6305,11 +6305,12 @@ MonoBehaviour:
   toggleKey: 107
   cameraMovementScript: {fileID: 0}
   playerMovementScript: {fileID: 0}
-  uiElementToToggle: {fileID: 1196118965}
-  uiElementNotToToggle: {fileID: 529168803}
-  uiElementNotToToggle2: {fileID: 288052921}
-  uiElementNotToToggle3: {fileID: 366209032}
-  uiElementNotToToggle4: {fileID: 2022877901}
+  questPanel: {fileID: 1196118965}
+  hudElementsToHide:
+  - {fileID: 529168803}
+  - {fileID: 288052921}
+  - {fileID: 366209032}
+  - {fileID: 2022877901}
 --- !u!114 &810441887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6374,8 +6375,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activeQuests:
   - {fileID: 11400000, guid: 17820f2925bff6b44a1bc93e016e1b3b, type: 2}
-  - {fileID: 11400000, guid: 383a03d24ed7b4746b3f6e4782f22463, type: 2}
   - {fileID: 11400000, guid: 4cff1d85d11a1814591508d700358828, type: 2}
+  - {fileID: 11400000, guid: 383a03d24ed7b4746b3f6e4782f22463, type: 2}
 --- !u!224 &811342342 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4477043850196476296, guid: 564222dbf8b72f54b9187379fe8776b3, type: 3}

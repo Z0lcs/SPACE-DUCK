@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f421ba9b15377f448bc5bd279a39bd0, type: 3}
-  m_Name: QuestTeszt
+  m_Name: "item felv\xE9tel"
   m_EditorClassIdentifier: 
   questName: "Item felv\xE9tel"
   questDescription: "Vedd fel az itemet a p\xE1ly\xE1r\xF3l"

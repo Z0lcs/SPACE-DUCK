@@ -20,14 +20,6 @@ public class QuestLogUI : MonoBehaviour
         if (detailsPanel != null) detailsPanel.SetActive(false);
     }
 
-    void Update()
-    {
-        if (questSO != null && detailsPanel.activeInHierarchy)
-        {
-            DisplayObjectives();
-        }
-    }
-
     private void OnEnable()
     {
         DisplayObjectives();
