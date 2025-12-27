@@ -10,9 +10,5 @@ public class QuestObjectiveSlot : MonoBehaviour
     {
         objectiveText.text = description;
         trackingText.text = progressText;
-
-        Color color = isComplete ? Color.green : Color.red;
-        objectiveText.color = color;
-        trackingText.color = color; 
     }
 }

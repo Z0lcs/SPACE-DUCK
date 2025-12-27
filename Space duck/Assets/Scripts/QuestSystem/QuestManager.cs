@@ -6,9 +6,12 @@ public class QuestManager : MonoBehaviour
 {
     public static QuestManager Instance { get; private set; }
 
+    public List<QuestSO> activeQuests = new List<QuestSO>();
     private Dictionary<QuestSO, Dictionary<QuestObjective, int>> questProgress = new();
     private HashSet<QuestSO> completedQuests = new();
     public static event Action<QuestSO> OnQuestCompleted;
+    [Header("Questek")]
+    public List<QuestSO> allAvailableQuests; 
     private void Awake()
     {
         if (Instance == null)
@@ -22,8 +25,23 @@ public class QuestManager : MonoBehaviour
             return;
         }
     }
-
-    
+    private void Start()
+    {
+        for (int i = 0; i < allAvailableQuests.Count; i++)
+        {
+            if (i < 5) 
+            {
+                AcceptQuest(allAvailableQuests[i]);
+            }
+        }
+    }
+    public void AcceptQuest(QuestSO newQuest)
+    {
+        if (newQuest != null && !activeQuests.Contains(newQuest) && !completedQuests.Contains(newQuest))
+        {
+            activeQuests.Add(newQuest);
+        }
+    }
     public void UpdateObjectiveProgress(QuestSO questSO, QuestObjective objective)
     {
         if (questSO == null || objective == null) return;
@@ -92,15 +110,26 @@ public class QuestManager : MonoBehaviour
     {
         if (questSO == null || completedQuests.Contains(questSO)) return;
 
-        Debug.Log($"CompleteQuest meghívva: {questSO.questName}");
-
+        activeQuests.Remove(questSO);
         completedQuests.Add(questSO);
+
 
         if (questProgress.ContainsKey(questSO))
         {
             questProgress.Remove(questSO);
         }
-        Debug.Log($"[QUEST COMPLETED] {questSO.questName} véglegesítve és törölve.");
+        foreach (QuestSO q in allAvailableQuests)
+        {
+            if (!activeQuests.Contains(q) && !completedQuests.Contains(q))
+            {
+                if (activeQuests.Count < 5) 
+                {
+                    AcceptQuest(q);
+                    break; 
+                }
+            }
+        }
+
         OnQuestCompleted?.Invoke(questSO);
     }
     public bool IsQuestCompleted(QuestSO questSO)
