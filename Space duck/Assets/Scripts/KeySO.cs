@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "KeySO", menuName = "Create SO/KeySO")]
+[CreateAssetMenu(fileName = "KeySO", menuName = "Create SO/New key")]
 public class KeySO : ScriptableObject
 {
     public string actionName; 

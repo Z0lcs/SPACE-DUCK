@@ -9,6 +9,17 @@ public class DialogueHistoryTracker : MonoBehaviour
     {
         spokenNPCs.Add(actorSO);
         Debug.Log("Just spoke to: " + actorSO.actorName);
+        if (QuestManager.Instance != null && QuestInputTracker.Instance != null)
+        {
+            foreach (QuestSO quest in QuestInputTracker.Instance.activeQuests)
+            {
+                foreach (QuestObjective obj in quest.questObjectives)
+                {
+                    if (obj.targetNPC == actorSO)
+                        QuestManager.Instance.UpdateObjectiveProgress(quest, obj);
+                }
+            }
+        }
     }
     public bool HasSpokenWith(ActorSO actorSO)
     {

@@ -17,7 +17,6 @@ public class QuestInputTracker : MonoBehaviour
             Destroy(this); 
         }
     }
-
     void Update()
     {
         if (QuestManager.Instance == null) return;

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Wood
   m_EditorClassIdentifier: Assembly-CSharp::NewMonoBehaviourScript
   itemName: Wood
+  itemDescription: Ez nagyin faaaaa
   icon: {fileID: 21300000, guid: ce119d8217dde1d449f3af6fffec5029, type: 3}
   maxStackSize: 10
   itemPrefab: {fileID: 3134275939117438567, guid: 3c724f09df5ad2d4581f8b4a98688e44, type: 3}

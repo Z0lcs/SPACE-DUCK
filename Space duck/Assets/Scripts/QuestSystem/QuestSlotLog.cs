@@ -17,7 +17,26 @@ public class QuestSlotLog : MonoBehaviour
             SetQuest(currentQuest);
         else gameObject.SetActive(false);
     }
+    private void OnEnable()
+    {
+        QuestManager.OnQuestCompleted += HandleQuestCompleted;
+    }
 
+    private void OnDisable()
+    {
+        QuestManager.OnQuestCompleted -= HandleQuestCompleted;
+    }
+
+    private void HandleQuestCompleted(QuestSO completedQuest)
+    {
+        Debug.Log($"Esemény érkezett a slothoz. Quest: {completedQuest.questName} | Slot questje: {(currentQuest != null ? currentQuest.questName : "NULL")}");
+
+        if (completedQuest == currentQuest)
+        {
+            Debug.Log("<color=green>EGYEZÉS! Slot törlése.</color>");
+            Destroy(this.gameObject);
+        }
+    }
     public void SetQuest(QuestSO questSO)
     {
         currentQuest = questSO;

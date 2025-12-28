@@ -13,6 +13,10 @@ public class QuestLogUI : MonoBehaviour
     [Header("Objectives")]
     [SerializeField] private QuestObjectiveSlot[] objectiveSlots;
 
+    [Header("Dinamikus Lista")]
+    [SerializeField] private GameObject questSlotPrefab;
+    [SerializeField] private Transform slotContainer;
+
     private QuestSO questSO;
 
     void Start()
@@ -20,23 +24,61 @@ public class QuestLogUI : MonoBehaviour
         if (detailsPanel != null) detailsPanel.SetActive(false);
     }
 
-    void Update()
+    private void OnEnable()
     {
-        if (questSO != null && detailsPanel.activeInHierarchy)
+        RefreshQuestList();
+
+        if (questSO != null && QuestManager.Instance.IsQuestCompleted(questSO))
         {
-            DisplayObjectives();
+            ResetSelection();
+        }
+
+        QuestManager.OnQuestCompleted += HandleQuestFinished;
+    }
+
+    private void OnDisable()
+    {
+        QuestManager.OnQuestCompleted -= HandleQuestFinished;
+    }
+
+    public void RefreshQuestList()
+    {
+        if (QuestManager.Instance == null || slotContainer == null || questSlotPrefab == null)
+        {
+            return;
+        }
+
+        foreach (Transform child in slotContainer)
+        {
+            if (child != null) Destroy(child.gameObject);
+        }
+
+        foreach (QuestSO activeQuest in QuestManager.Instance.activeQuests)
+        {
+            GameObject newSlot = Instantiate(questSlotPrefab, slotContainer);
+            QuestSlotLog slotScript = newSlot.GetComponent<QuestSlotLog>();
+
+            if (slotScript != null)
+            {
+                slotScript.questLogUI = this;
+                slotScript.SetQuest(activeQuest);
+            }
         }
     }
 
-    private void OnEnable()
+    private void HandleQuestFinished(QuestSO completedQuest)
     {
-        DisplayObjectives();
+        RefreshQuestList();
+
+        if (this.questSO == completedQuest)
+        {
+            ResetSelection();
+        }
     }
 
     public void HandleQuestClicked(QuestSO clickedQuest)
     {
         this.questSO = clickedQuest;
-
         if (detailsPanel != null) detailsPanel.SetActive(true);
 
         questNameText.text = questSO.questName;
@@ -54,7 +96,6 @@ public class QuestLogUI : MonoBehaviour
             if (i < questSO.questObjectives.Count)
             {
                 var objective = questSO.questObjectives[i];
-
                 int currentAmount = QuestManager.Instance.GetCurrentAmount(questSO, objective);
                 string progressText = QuestManager.Instance.GetProgressText(questSO, objective);
                 bool isComplete = currentAmount >= objective.requiredAmount;
