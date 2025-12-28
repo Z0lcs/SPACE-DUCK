@@ -13,29 +13,34 @@ public class Chest : MonoBehaviour
     private List<Slot> chestSlots = new List<Slot>();
     private bool isChestOpen = false;
     private Transform playerTransform;
-    private float sqrCloseDistance; // Gyorsítótárazott négyzetes távolság
+    private float sqrCloseDistance;
 
     private void Awake()
     {
+        // Inicializáljuk a listát és összegyûjtjük a slotokat
+        chestSlots = new List<Slot>();
+
         if (chestSlotParent != null)
         {
-            chestSlots.AddRange(chestSlotParent.GetComponentsInChildren<Slot>());
+            Slot[] slots = chestSlotParent.GetComponentsInChildren<Slot>();
+            if (slots != null) chestSlots.AddRange(slots);
         }
-        // Elõre kiszámoljuk a távolság négyzetét
+
         sqrCloseDistance = closeDistance * closeDistance;
     }
 
     private void Start()
     {
+        // Játékos megkeresése a távolság alapú bezáráshoz
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null) playerTransform = player.transform;
     }
 
     private void Update()
     {
+        // Automatikus bezárás, ha a játékos túl messzire megy
         if (isChestOpen && playerTransform != null)
         {
-            // sqrMagnitude sokkal gyorsabb az Update-ben
             float sqrDist = (transform.position - playerTransform.position).sqrMagnitude;
             if (sqrDist > sqrCloseDistance)
             {
@@ -49,9 +54,11 @@ public class Chest : MonoBehaviour
         isChestOpen = true;
         if (chestUIPanel != null) chestUIPanel.SetActive(true);
 
-        Inventory.Instance.ToggleInventoryUI(true);
-        // Csak regisztráljuk a már Awake-ben kigyûjtött slotokat
-        Inventory.Instance.RegisterExternalSlots(chestSlots);
+        if (Inventory.Instance != null)
+        {
+            Inventory.Instance.ToggleInventoryUI(true);
+            Inventory.Instance.RegisterExternalSlots(chestSlots);
+        }
     }
 
     public void CloseChest()
@@ -61,7 +68,28 @@ public class Chest : MonoBehaviour
         isChestOpen = false;
         if (chestUIPanel != null) chestUIPanel.SetActive(false);
 
-        Inventory.Instance.UnregisterExternalSlots(chestSlots);
-        Inventory.Instance.ToggleInventoryUI(false);
+        if (Inventory.Instance != null)
+        {
+            Inventory.Instance.UnregisterExternalSlots(chestSlots);
+            Inventory.Instance.ToggleInventoryUI(false);
+        }
+    }
+
+    /// <summary>
+    /// Megszámolja, hogy egy adott tárgyból mennyi van összesen a ládában.
+    /// </summary>
+    public int GetItemQuantityInChest(InventoryItemSO itemSO)
+    {
+        if (itemSO == null || chestSlots == null) return 0;
+
+        int total = 0;
+        foreach (Slot slot in chestSlots)
+        {
+            if (slot != null && slot.HasItem() && slot.GetItem() == itemSO)
+            {
+                total += slot.GetAmount();
+            }
+        }
+        return total;
     }
 }
