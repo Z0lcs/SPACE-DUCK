@@ -29,6 +29,7 @@ public partial class Inventory : MonoBehaviour
     private Material originalMaterial;
     private Renderer lookedAtRenderer;
     private Item currentlyLookedAtItem;
+    private Chest currentlyLookedAtChest; // Cache a ládának
     private GameObject currentHandItem;
     private int equippedHotbarIndex = 0;
 
@@ -38,10 +39,12 @@ public partial class Inventory : MonoBehaviour
 
     private Slot dragedSlot = null;
     private bool isDragging = false;
+    private Chest currentOpenedChest;
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
+        else { Destroy(gameObject); return; }
 
         inventorySlots.AddRange(inventorySlotParent.GetComponentsInChildren<Slot>());
         hotbarSlots.AddRange(hotbarObj.GetComponentsInChildren<Slot>());
@@ -58,93 +61,179 @@ public partial class Inventory : MonoBehaviour
 
     void Update()
     {
-        
-
         HandleInventoryToggle();
 
-        if (Time.timeScale > 0)
+        bool isUIOpen = container.activeInHierarchy;
+        bool canInteract = Time.timeScale > 0 || currentOpenedChest != null;
+
+        if (canInteract)
         {
-            DetectLookAtItem();
+            PerformInteractionDetection();
 
             if (Keyboard.current.eKey.wasPressedThisFrame)
             {
-                PickupItem();
+                // CSAK akkor zárja be, ha van nyitott láda referencia
+                if (currentOpenedChest != null)
+                {
+                    currentOpenedChest.CloseChest();
+                    // A CloseChest() hívja az UnregisterExternalSlots-ot, 
+                    // ami nullázza a currentOpenedChest-et, így minden tiszta marad.
+                }
+                // Ha nincs nyitva láda, és az inventory sem látszik, akkor keresünk interakciót
+                else if (!isUIOpen)
+                {
+                    ExecuteInteraction();
+                }
             }
 
-            HandleHotbarSelection();
-            HandleDropEquippedItem();
+            if (Time.timeScale > 0)
+            {
+                HandleHotbarSelection();
+                HandleDropEquippedItem();
+            }
         }
 
         HandleDragLogic();
         HandleRightClickSplit();
     }
 
-    public int GetItemQuantity(InventoryItemSO itemSO)
+    // Összevont detektálás: Tárgy és Láda egyben
+    private void PerformInteractionDetection()
     {
-        int total = 0;
-        foreach (Slot slot in allSlots)
+        // Elõzõ highlight alaphelyzetbe állítása
+        ResetHighlight();
+
+        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        if (Physics.Raycast(ray, out RaycastHit hit, pickupRange, ~excludeLayers))
         {
-            if (slot.HasItem() && slot.GetItem() == itemSO)
+            // 1. Megnézzük, tárgy-e
+            Item item = hit.collider.GetComponent<Item>();
+            if (item != null)
             {
-                total += slot.GetAmount();
+                currentlyLookedAtItem = item;
+                ApplyHighlight(item.GetComponent<Renderer>());
+                return;
+            }
+
+            // 2. Megnézzük, láda-e
+            Chest chest = hit.collider.GetComponent<Chest>();
+            if (chest != null)
+            {
+                currentlyLookedAtChest = chest;
+                ApplyHighlight(chest.GetComponent<Renderer>());
             }
         }
-        return total;
     }
 
-    private void NotifyQuestManagerOfInventoryChange()
+    private void ApplyHighlight(Renderer rend)
     {
-        if (QuestManager.Instance != null && QuestInputTracker.Instance != null)
-        {
-            foreach (QuestSO quest in QuestInputTracker.Instance.activeQuests)
-            {
-                foreach (QuestObjective obj in quest.questObjectives)
-                {
-                    if (obj.targetItem != null)
-                        QuestManager.Instance.UpdateObjectiveProgress(quest, obj);
-                }
-            }
-        }
+        if (rend == null) return;
+        lookedAtRenderer = rend;
+        originalMaterial = rend.material;
+        rend.material = highlightMaterial;
     }
 
-    private void HandleInventoryToggle()
-    {
-        if (Keyboard.current.tabKey.wasPressedThisFrame)
-        {
-            bool isInventoryOpen = !container.activeInHierarchy;
-            container.SetActive(isInventoryOpen);
-
-            Cursor.lockState = isInventoryOpen ? CursorLockMode.None : CursorLockMode.Locked;
-            Cursor.visible = isInventoryOpen;
-            Time.timeScale = isInventoryOpen ? 0f : 1f;
-
-            if (hudCanvas != null) hudCanvas.SetActive(!isInventoryOpen);
-        }
-    }
-
-    private void DetectLookAtItem()
+    private void ResetHighlight()
     {
         if (lookedAtRenderer != null)
         {
             lookedAtRenderer.material = originalMaterial;
             lookedAtRenderer = null;
-            currentlyLookedAtItem = null;
         }
+        currentlyLookedAtItem = null;
+        currentlyLookedAtChest = null;
+    }
 
-        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, pickupRange, ~excludeLayers))
+    private void ExecuteInteraction()
+    {
+        // Elsõbbség a ládának, ha azt nézzük
+        if (currentlyLookedAtChest != null)
         {
-            Item item = hit.collider.GetComponent<Item>();
-            if (item != null)
+            currentOpenedChest = currentlyLookedAtChest;
+            currentOpenedChest.OpenChest();
+        }
+        else if (currentlyLookedAtItem != null)
+        {
+            PickupItem();
+        }
+    }
+
+    // --- MEGLÉVÕ FUNKCIÓK OPTIMALIZÁLVA ---
+
+    public void RegisterExternalSlots(List<Slot> externalSlots)
+    {
+        foreach (var slot in externalSlots)
+        {
+            if (!allSlots.Contains(slot)) allSlots.Add(slot);
+            slot.hovering = false;
+        }
+    }
+
+    public void UnregisterExternalSlots(List<Slot> externalSlots)
+    {
+        foreach (var slot in externalSlots)
+        {
+            slot.hovering = false;
+            allSlots.Remove(slot);
+        }
+        currentOpenedChest = null;
+    }
+
+    private void HandleInventoryToggle()
+    {
+        if (Keyboard.current.tabKey.wasPressedThisFrame || (currentOpenedChest != null && Keyboard.current.escapeKey.wasPressedThisFrame))
+        {
+            if (currentOpenedChest != null)
+                currentOpenedChest.CloseChest();
+            else
+                ToggleInventoryUI(!container.activeInHierarchy);
+        }
+    }
+
+    public void ToggleInventoryUI(bool isOpen)
+    {
+        container.SetActive(isOpen);
+        Cursor.lockState = isOpen ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = isOpen;
+        Time.timeScale = isOpen ? 0f : 1f;
+        if (hudCanvas != null) hudCanvas.SetActive(!isOpen);
+
+        if (!isOpen)
+        {
+            foreach (var slot in allSlots) slot.hovering = false;
+        }
+    }
+
+    public void AddItem(InventoryItemSO itemToAdd, int amount)
+    {
+        int remaining = amount;
+        // 1. Meglévõ stackek feltöltése
+        foreach (Slot slot in allSlots)
+        {
+            if (slot.HasItem() && slot.GetItem() == itemToAdd)
             {
-                currentlyLookedAtItem = item;
-                Renderer rend = item.GetComponent<Renderer>();
-                if (rend != null)
+                int currentAmount = slot.GetAmount();
+                int spaceLeft = itemToAdd.maxStackSize - currentAmount;
+                if (spaceLeft > 0)
                 {
-                    originalMaterial = rend.material;
-                    rend.material = highlightMaterial;
-                    lookedAtRenderer = rend;
+                    int amountToFill = Mathf.Min(spaceLeft, remaining);
+                    slot.SetItem(itemToAdd, currentAmount + amountToFill);
+                    remaining -= amountToFill;
+                    if (remaining <= 0) break;
+                }
+            }
+        }
+        // 2. Üres slotok keresése, ha maradt tárgy
+        if (remaining > 0)
+        {
+            foreach (Slot slot in allSlots)
+            {
+                if (!slot.HasItem())
+                {
+                    int amountToPlace = Mathf.Min(itemToAdd.maxStackSize, remaining);
+                    slot.SetItem(itemToAdd, amountToPlace);
+                    remaining -= amountToPlace;
+                    if (remaining <= 0) break;
                 }
             }
         }
@@ -156,43 +245,9 @@ public partial class Inventory : MonoBehaviour
         {
             AddItem(currentlyLookedAtItem.item, currentlyLookedAtItem.amount);
             NotifyQuestManagerOfInventoryChange();
-            lookedAtRenderer = null;
             Destroy(currentlyLookedAtItem.gameObject);
-            currentlyLookedAtItem = null;
+            ResetHighlight();
             EquipHandItem();
-        }
-    }
-
-    public void AddItem(InventoryItemSO itemToAdd, int amount)
-    {
-        int remaining = amount;
-
-        foreach (Slot slot in allSlots)
-        {
-            if (slot.HasItem() && slot.GetItem() == itemToAdd)
-            {
-                int currentAmount = slot.GetAmount();
-                int spaceLeft = itemToAdd.maxStackSize - currentAmount;
-
-                if (spaceLeft > 0)
-                {
-                    int amountToFill = Mathf.Min(spaceLeft, remaining);
-                    slot.SetItem(itemToAdd, currentAmount + amountToFill);
-                    remaining -= amountToFill;
-                    if (remaining <= 0) return;
-                }
-            }
-        }
-
-        foreach (Slot slot in allSlots)
-        {
-            if (!slot.HasItem())
-            {
-                int amountToPlace = Mathf.Min(itemToAdd.maxStackSize, remaining);
-                slot.SetItem(itemToAdd, amountToPlace);
-                remaining -= amountToPlace;
-                if (remaining <= 0) return;
-            }
         }
     }
 
@@ -205,6 +260,7 @@ public partial class Inventory : MonoBehaviour
                 equippedHotbarIndex = i;
                 UpdateHotbarOpacity();
                 EquipHandItem();
+                break; // Csak egy gombot dolgozunk fel egyszerre
             }
         }
     }
@@ -226,16 +282,11 @@ public partial class Inventory : MonoBehaviour
     private void EquipHandItem()
     {
         if (currentHandItem != null) Destroy(currentHandItem);
-
         Slot equippedSlot = hotbarSlots[equippedHotbarIndex];
-        if (!equippedSlot.HasItem()) return;
+        if (!equippedSlot.HasItem() || equippedSlot.GetItem().handItemPrefab == null) return;
 
-        InventoryItemSO item = equippedSlot.GetItem();
-        if (item.handItemPrefab == null) return;
-
-        currentHandItem = Instantiate(item.handItemPrefab, hand);
-        currentHandItem.transform.localPosition = Vector3.zero;
-        currentHandItem.transform.localRotation = Quaternion.identity;
+        currentHandItem = Instantiate(equippedSlot.GetItem().handItemPrefab, hand);
+        currentHandItem.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
     }
 
     private void HandleDropEquippedItem()
@@ -243,21 +294,18 @@ public partial class Inventory : MonoBehaviour
         if (Keyboard.current.qKey.wasPressedThisFrame)
         {
             Slot equippedSlot = hotbarSlots[equippedHotbarIndex];
-            if (equippedSlot.HasItem())
+            if (equippedSlot.HasItem() && equippedSlot.GetItem().itemPrefab != null)
             {
                 InventoryItemSO itemSO = equippedSlot.GetItem();
-                if (itemSO.itemPrefab != null)
-                {
-                    Vector3 dropPos = Camera.main.transform.position + Camera.main.transform.forward * 1.5f;
-                    GameObject dropped = Instantiate(itemSO.itemPrefab, dropPos, Quaternion.identity);
+                Vector3 dropPos = Camera.main.transform.position + Camera.main.transform.forward * 1.5f;
+                GameObject dropped = Instantiate(itemSO.itemPrefab, dropPos, Quaternion.identity);
 
-                    Item itemComp = dropped.GetComponent<Item>();
-                    itemComp.item = itemSO;
-                    itemComp.amount = equippedSlot.GetAmount();
+                Item itemComp = dropped.GetComponent<Item>();
+                itemComp.item = itemSO;
+                itemComp.amount = equippedSlot.GetAmount();
 
-                    equippedSlot.ClearSlot();
-                    EquipHandItem();
-                }
+                equippedSlot.ClearSlot();
+                EquipHandItem();
             }
         }
     }
@@ -279,7 +327,6 @@ public partial class Inventory : MonoBehaviour
         if (isDragging)
         {
             dragIcon.transform.position = Mouse.current.position.ReadValue();
-
             if (Mouse.current.leftButton.wasReleasedThisFrame)
             {
                 Slot hovered = GetHoveredSlot();
@@ -295,13 +342,9 @@ public partial class Inventory : MonoBehaviour
     private void HandleDrop(Slot from, Slot to)
     {
         if (from == to) return;
-
         if (to.HasItem() && to.GetItem() == from.GetItem())
         {
-            int max = to.GetItem().maxStackSize;
-            int space = max - to.GetAmount();
-            int move = Mathf.Min(space, from.GetAmount());
-
+            int move = Mathf.Min(to.GetItem().maxStackSize - to.GetAmount(), from.GetAmount());
             to.SetItem(to.GetItem(), to.GetAmount() + move);
             from.SetItem(from.GetItem(), from.GetAmount() - move);
             if (from.GetAmount() <= 0) from.ClearSlot();
@@ -310,7 +353,6 @@ public partial class Inventory : MonoBehaviour
         {
             InventoryItemSO tempItem = to.GetItem();
             int tempAmt = to.GetAmount();
-
             to.SetItem(from.GetItem(), from.GetAmount());
             if (tempItem != null) from.SetItem(tempItem, tempAmt);
             else from.ClearSlot();
@@ -333,17 +375,41 @@ public partial class Inventory : MonoBehaviour
                     {
                         slot.SetItem(hovered.GetItem(), half);
                         hovered.SetItem(hovered.GetItem(), hovered.GetAmount() - half);
+                        NotifyQuestManagerOfInventoryChange();
                         break;
                     }
                 }
-                NotifyQuestManagerOfInventoryChange();
             }
         }
     }
 
     private Slot GetHoveredSlot()
     {
-        foreach (Slot s in allSlots) if (s.hovering) return s;
-        return null;
+        // Optimalizált lekérés: az elsõ aktív hovered slotot adja vissza
+        return allSlots.Find(s => s.hovering && s.gameObject.activeInHierarchy);
+    }
+
+    public int GetItemQuantity(InventoryItemSO itemSO)
+    {
+        int total = 0;
+        foreach (Slot slot in allSlots)
+        {
+            if (slot.HasItem() && slot.GetItem() == itemSO) total += slot.GetAmount();
+        }
+        return total;
+    }
+
+    private void NotifyQuestManagerOfInventoryChange()
+    {
+        if (QuestManager.Instance == null || QuestInputTracker.Instance == null) return;
+
+        foreach (QuestSO quest in QuestInputTracker.Instance.activeQuests)
+        {
+            foreach (QuestObjective obj in quest.questObjectives)
+            {
+                if (obj.targetItem != null)
+                    QuestManager.Instance.UpdateObjectiveProgress(quest, obj);
+            }
+        }
     }
 }
