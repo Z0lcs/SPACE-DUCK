@@ -29,7 +29,7 @@ public partial class Inventory : MonoBehaviour
     private Material originalMaterial;
     private Renderer lookedAtRenderer;
     private Item currentlyLookedAtItem;
-    private Chest currentlyLookedAtChest; // Cache a ládának
+    private Chest currentlyLookedAtChest;
     private GameObject currentHandItem;
     private int equippedHotbarIndex = 0;
 
@@ -72,14 +72,10 @@ public partial class Inventory : MonoBehaviour
 
             if (Keyboard.current.eKey.wasPressedThisFrame)
             {
-                // CSAK akkor zárja be, ha van nyitott láda referencia
                 if (currentOpenedChest != null)
                 {
                     currentOpenedChest.CloseChest();
-                    // A CloseChest() hívja az UnregisterExternalSlots-ot, 
-                    // ami nullázza a currentOpenedChest-et, így minden tiszta marad.
                 }
-                // Ha nincs nyitva láda, és az inventory sem látszik, akkor keresünk interakciót
                 else if (!isUIOpen)
                 {
                     ExecuteInteraction();
@@ -90,6 +86,8 @@ public partial class Inventory : MonoBehaviour
             {
                 HandleHotbarSelection();
                 HandleDropEquippedItem();
+                // ÚJ: Tárgy használatának kezelése
+                HandleItemUsage();
             }
         }
 
@@ -97,16 +95,50 @@ public partial class Inventory : MonoBehaviour
         HandleRightClickSplit();
     }
 
-    // Összevont detektálás: Tárgy és Láda egyben
+    // --- HASZNÁLATI LOGIKA ---
+    private void HandleItemUsage()
+    {
+        // Ne használjuk a tárgyat, ha az inventory UI nyitva van
+        if (container.activeInHierarchy || isDragging) return;
+
+        // Bal egérgomb kattintás
+        if (Mouse.current.rightButton.wasPressedThisFrame)
+        {
+            Slot equippedSlot = hotbarSlots[equippedHotbarIndex];
+
+            if (equippedSlot.HasItem())
+            {
+                InventoryItemSO item = equippedSlot.GetItem();
+
+                // Meghívjuk a ScriptableObject Use függvényét
+                bool consumed = item.Use();
+
+                if (consumed)
+                {
+                    // Ha elfogyasztottuk (pl pizza), csökkentjük a darabszámot
+                    int remaining = equippedSlot.GetAmount() - 1;
+                    if (remaining <= 0)
+                    {
+                        equippedSlot.ClearSlot();
+                        EquipHandItem(); // Modell törlése a kézbõl
+                    }
+                    else
+                    {
+                        equippedSlot.SetItem(item, remaining);
+                    }
+                    NotifyQuestManagerOfInventoryChange();
+                }
+            }
+        }
+    }
+
     private void PerformInteractionDetection()
     {
-        // Elõzõ highlight alaphelyzetbe állítása
         ResetHighlight();
 
         Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, pickupRange, ~excludeLayers))
         {
-            // 1. Megnézzük, tárgy-e
             Item item = hit.collider.GetComponent<Item>();
             if (item != null)
             {
@@ -115,7 +147,6 @@ public partial class Inventory : MonoBehaviour
                 return;
             }
 
-            // 2. Megnézzük, láda-e
             Chest chest = hit.collider.GetComponent<Chest>();
             if (chest != null)
             {
@@ -146,7 +177,6 @@ public partial class Inventory : MonoBehaviour
 
     private void ExecuteInteraction()
     {
-        // Elsõbbség a ládának, ha azt nézzük
         if (currentlyLookedAtChest != null)
         {
             currentOpenedChest = currentlyLookedAtChest;
@@ -157,8 +187,6 @@ public partial class Inventory : MonoBehaviour
             PickupItem();
         }
     }
-
-    // --- MEGLÉVÕ FUNKCIÓK OPTIMALIZÁLVA ---
 
     public void RegisterExternalSlots(List<Slot> externalSlots)
     {
@@ -207,7 +235,6 @@ public partial class Inventory : MonoBehaviour
     public void AddItem(InventoryItemSO itemToAdd, int amount)
     {
         int remaining = amount;
-        // 1. Meglévõ stackek feltöltése
         foreach (Slot slot in allSlots)
         {
             if (slot.HasItem() && slot.GetItem() == itemToAdd)
@@ -223,7 +250,6 @@ public partial class Inventory : MonoBehaviour
                 }
             }
         }
-        // 2. Üres slotok keresése, ha maradt tárgy
         if (remaining > 0)
         {
             foreach (Slot slot in allSlots)
@@ -260,7 +286,7 @@ public partial class Inventory : MonoBehaviour
                 equippedHotbarIndex = i;
                 UpdateHotbarOpacity();
                 EquipHandItem();
-                break; // Csak egy gombot dolgozunk fel egyszerre
+                break;
             }
         }
     }
@@ -385,7 +411,6 @@ public partial class Inventory : MonoBehaviour
 
     private Slot GetHoveredSlot()
     {
-        // Optimalizált lekérés: az elsõ aktív hovered slotot adja vissza
         return allSlots.Find(s => s.hovering && s.gameObject.activeInHierarchy);
     }
 

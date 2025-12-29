@@ -23,6 +23,10 @@ public class Breakable : MonoBehaviour
 
     private bool _broken;
 
+    // --- ÚJ VÁLTOZÓ A SZÁMLÁLÁSHOZ ---
+    // A 'static' miatt minden Breakable script közösen használja ezt a számot
+    private static int totalHitCount = 0;
+
     void Update()
     {
         if (Mouse.current.leftButton.wasPressedThisFrame && !_broken && Time.timeScale > 0)
@@ -35,6 +39,20 @@ public class Breakable : MonoBehaviour
                 if (hit.transform == transform)
                 {
                     _broken = true;
+
+                    // Ütésszámláló növelése minden találatnál
+                    totalHitCount++;
+
+                    // Ellenőrizzük, hogy elértük-e az 5 ütést
+                    if (totalHitCount >= 5)
+                    {
+                        if (HungerManager.Instance != null)
+                        {
+                            HungerManager.Instance.DecreaseHunger(1);
+                        }
+                        totalHitCount = 0; // Visszaállítás 0-ra az éhségcsökkenés után
+                    }
+
                     StartCoroutine(BreakSequence(hit.point));
                     break;
                 }
