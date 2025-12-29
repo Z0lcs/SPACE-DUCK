@@ -49,9 +49,9 @@ public partial class Inventory : MonoBehaviour
         inventorySlots.AddRange(inventorySlotParent.GetComponentsInChildren<Slot>());
         hotbarSlots.AddRange(hotbarObj.GetComponentsInChildren<Slot>());
 
-        // Fontos: Itt az allSlots-ban is a hotbar legyen elöl, 
-        // hogy a GetItemQuantity és egyéb keresõk is konzisztensek legyenek
-        allSlots.AddRange(hotbarSlots);
+        // Fontos: Itt az allSlots-ban is a hotbar legyen elöl, 
+        // hogy a GetItemQuantity és egyéb keresõk is konzisztensek legyenek
+        allSlots.AddRange(hotbarSlots);
         allSlots.AddRange(inventorySlots);
     }
 
@@ -127,14 +127,14 @@ public partial class Inventory : MonoBehaviour
         }
     }
 
-    // --- MÓDOSÍTOTT ADDIITEM METÓDUS ---
-    public void AddItem(InventoryItemSO itemToAdd, int amount)
+    // --- MÓDOSÍTOTT ADDIITEM METÓDUS ---
+    public void AddItem(InventoryItemSO itemToAdd, int amount)
     {
         int remaining = amount;
 
-        // 1. LÉPÉS: Meglévõ stackek keresése ELÕSZÖR a HOTBARON, aztán az Inventoryban
-        foreach (Slot slot in allSlots) // Mivel az Awake-ben megfordítottuk a sorrendet, ez jó
-        {
+        // 1. LÉPÉS: Meglévõ stackek keresése ELÕSZÖR a HOTBARON, aztán az Inventoryban
+        foreach (Slot slot in allSlots) // Mivel az Awake-ben megfordítottuk a sorrendet, ez jó
+        {
             if (slot.HasItem() && slot.GetItem() == itemToAdd)
             {
                 int currentAmount = slot.GetAmount();
@@ -149,11 +149,11 @@ public partial class Inventory : MonoBehaviour
             }
         }
 
-        // 2. LÉPÉS: Ha még maradt tárgy, üres hely keresése ELÕSZÖR a HOTBARON
-        if (remaining > 0)
+        // 2. LÉPÉS: Ha még maradt tárgy, üres hely keresése ELÕSZÖR a HOTBARON
+        if (remaining > 0)
         {
-            // Elõször csak a hotbart nézzük végig üres helyért
-            foreach (Slot slot in hotbarSlots)
+            // Elõször csak a hotbart nézzük végig üres helyért
+            foreach (Slot slot in hotbarSlots)
             {
                 if (!slot.HasItem())
                 {
@@ -165,8 +165,8 @@ public partial class Inventory : MonoBehaviour
             }
         }
 
-        // 3. LÉPÉS: Ha a hotbar betelt, mehet az Inventory üres helyeire
-        if (remaining > 0)
+        // 3. LÉPÉS: Ha a hotbar betelt, mehet az Inventory üres helyeire
+        if (remaining > 0)
         {
             foreach (Slot slot in inventorySlots)
             {
@@ -180,8 +180,8 @@ public partial class Inventory : MonoBehaviour
             }
         }
 
-        // Frissítjük a kezünkben lévõ tárgyat, ha épp abba a slotba került valami, amit fogunk
-        EquipHandItem();
+        // Frissítjük a kezünkben lévõ tárgyat, ha épp abba a slotba került valami, amit fogunk
+        EquipHandItem();
     }
 
     private void PerformInteractionDetection()
@@ -444,9 +444,10 @@ public partial class Inventory : MonoBehaviour
 
     private void NotifyQuestManagerOfInventoryChange()
     {
-        if (QuestManager.Instance == null || QuestInputTracker.Instance == null) return;
+        if (QuestManager.Instance == null || QuestInputTracker.Instance == null) return; 
+  
 
-        foreach (QuestSO quest in QuestInputTracker.Instance.activeQuests)
+    foreach (QuestSO quest in QuestInputTracker.Instance.activeQuests)
         {
             foreach (QuestObjective obj in quest.questObjectives)
             {
@@ -456,3 +457,4 @@ public partial class Inventory : MonoBehaviour
         }
     }
 }
+
