@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f421ba9b15377f448bc5bd279a39bd0, type: 3}
   m_Name: Pizza
   m_EditorClassIdentifier: 
-  questName: Pizza
-  questDescription: 
+  questName: "\xC9lelem"
+  questDescription: "\xC9hesen semmihez sem szabad hozz\xE1kezdeni. Valahol biztos
+    van pizza..."
   questObjectives:
   - description: Pizza
     target: {fileID: 11400000, guid: 42d2ef88d1c9efa43aa4a804cfe60e8b, type: 2}

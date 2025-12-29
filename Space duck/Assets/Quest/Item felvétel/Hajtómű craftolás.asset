@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f421ba9b15377f448bc5bd279a39bd0, type: 3}
   m_Name: "Hajt\xF3m\u0171 craftol\xE1s"
   m_EditorClassIdentifier: 
-  questName: "Hajt\u0151m\u0171 craftol\xE1s"
-  questDescription: 
+  questName: "Szerel\xE9s"
+  questDescription: "Szereld \xF6ssze az \xFCzemanyag tart\xE1lyt a hajt\xF3val.
+    \xCDgy kapod meg a hajt\xF3m\xFBvet."
   questObjectives:
-  - description: "Hajt\xF4m\xFB craftol\xE1s"
+  - description: "Szerel\xE9s"
     target: {fileID: 0}
     requiredAmount: 2

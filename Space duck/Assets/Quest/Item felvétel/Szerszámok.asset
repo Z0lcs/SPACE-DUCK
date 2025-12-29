@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: "Szersz\xE1mok"
   m_EditorClassIdentifier: 
   questName: "Szersz\xE1mok"
-  questDescription: "Vedd fel az itemet a p\xE1ly\xE1r\xF3l"
+  questDescription: "Keresd meg a csillag- \xE9s laposfej\xFB csavarh\xFAz\xF3kat,
+    valamint a vill\xE1skulcsot! M\xE9g j\xF3l j\xF6hetnek, ha valamit meg k\xE9ne
+    szerelni."
   questObjectives:
   - description: Csillag
     target: {fileID: 11400000, guid: e18e4b7fde58eb74c84d568605da45ed, type: 2}

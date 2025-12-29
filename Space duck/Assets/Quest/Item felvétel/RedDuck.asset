@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f421ba9b15377f448bc5bd279a39bd0, type: 3}
   m_Name: RedDuck
   m_EditorClassIdentifier: 
-  questName: RedDuck
-  questDescription: 
+  questName: "\xDCzemanyag"
+  questDescription: "RedDuck n\xE9lk\xFCl nem indul el az \xFBrhaj\xF3. Keress bel\u0151le
+    egy t\xE1lc\xE1val!"
   questObjectives:
   - description: RedDuck
     target: {fileID: 11400000, guid: 8cd07b393622cfe4ebf39f81995bb65a, type: 2}

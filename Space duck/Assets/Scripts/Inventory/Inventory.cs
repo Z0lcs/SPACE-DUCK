@@ -7,9 +7,7 @@ public partial class Inventory : MonoBehaviour
 {
     public static Inventory Instance { get; private set; }
 
-    [Header("Items & Prefabs")]
-    public InventoryItemSO woodItem;
-    public InventoryItemSO axeItem;
+    [Header("Prefabs")]
     public Transform hand;
 
     [Header("UI Elements")]
@@ -49,8 +47,6 @@ public partial class Inventory : MonoBehaviour
         inventorySlots.AddRange(inventorySlotParent.GetComponentsInChildren<Slot>());
         hotbarSlots.AddRange(hotbarObj.GetComponentsInChildren<Slot>());
 
-        // Fontos: Itt az allSlots-ban is a hotbar legyen elöl, 
-        // hogy a GetItemQuantity és egyéb keresõk is konzisztensek legyenek
         allSlots.AddRange(hotbarSlots);
         allSlots.AddRange(inventorySlots);
     }
@@ -63,9 +59,19 @@ public partial class Inventory : MonoBehaviour
 
     void Update()
     {
-        HandleInventoryToggle();
+        // 1. MEGHATÁROZZUK AZ ÁLLAPOTOKAT
+        bool inventoryOpen = container.activeInHierarchy;
+
+        // Csak akkor engedjük az Inventory kezelését (nyitást/bezárást), ha:
+        // - Már nyitva van (hogy be tudd zárni)
+        // - VAGY a játék fut (Time.timeScale > 0), tehát nincs nyitva a Quest panel vagy más menü.
+        if (inventoryOpen || Time.timeScale > 0)
+        {
+            HandleInventoryToggle();
+        }
 
         bool isUIOpen = container.activeInHierarchy;
+
         bool canInteract = Time.timeScale > 0 || currentOpenedChest != null;
 
         if (canInteract)
