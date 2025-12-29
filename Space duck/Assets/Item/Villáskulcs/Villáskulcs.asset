@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e56966e50bc013c44ae226cff828bf34, type: 3}
+  m_Name: "Vill\xE1skulcs"
+  m_EditorClassIdentifier: 
+  itemName: "Vill\xE1skulcs"
+  itemDescription: 
+  icon: {fileID: 21300000, guid: f348b696d6276664c8c5fdfa325cd5e4, type: 3}
+  maxStackSize: 1
+  itemPrefab: {fileID: 4984230693600219564, guid: 7687ac161263c7a46b4de31ae4bdab13, type: 3}
+  handItemPrefab: {fileID: 4984230693600219564, guid: 871734b0ca7414f4bb89d7903ef1bf90, type: 3}

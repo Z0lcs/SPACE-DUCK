@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e56966e50bc013c44ae226cff828bf34, type: 3}
+  m_Name: "Egyenes Csavarh\xFAz\xF3"
+  m_EditorClassIdentifier: 
+  itemName: "Egyenes csavarh\xFAz\xF3"
+  itemDescription: 
+  icon: {fileID: 21300000, guid: c076fd7d48e4ea6479d4ebd191eb3eef, type: 3}
+  maxStackSize: 1
+  itemPrefab: {fileID: 4181317931219197045, guid: b713fa513016f564190b7ea47b9fc2e6, type: 3}
+  handItemPrefab: {fileID: 4181317931219197045, guid: b47d69f37f33b2d4eb320289f1508814, type: 3}

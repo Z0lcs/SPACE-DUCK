@@ -16,7 +16,7 @@ public class TutorialManager : MonoBehaviour
     void Start()
     {
         if (dialoguePanel != null) dialoguePanel.SetActive(true);
-        StartCoroutine(TypeText("Üdv a világban, vándor! Használd a WASD billentyûket a mozgáshoz!"));
+        StartCoroutine(TypeText("Üdv a világban, én a professzor vagyok! Használd a WASD billentyûket a mozgáshoz!"));
     }
 
     void Update()
@@ -35,7 +35,6 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
-    // Ezt hívja meg a Trigger és a Quest rendszer is
     public void ShowExternalMessage(string message, float displayTime = 4f)
     {
         StopAllCoroutines();

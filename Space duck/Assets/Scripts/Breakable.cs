@@ -9,6 +9,11 @@ public class Breakable : MonoBehaviour
     [SerializeField] private float _collisionMultiplier = 100;
     [SerializeField] private float _breakRange = 5f;
 
+    [Header("Cleanup")]
+    [Tooltip("Ha be van pipálva, a törmelék sosem tűnik el.")]
+    [SerializeField] private bool neverDestroyPieces = false;
+    [SerializeField] private float durability = 5f;
+
     [Header("Audio")]
     public AudioSource playerAudioSource;
     public AudioClip boxExplosionSound;
@@ -49,11 +54,12 @@ public class Breakable : MonoBehaviour
         if (TryGetComponent<Renderer>(out var rend)) rend.enabled = false;
         if (TryGetComponent<Collider>(out var coll)) coll.enabled = false;
 
-        // Szilánkok létrehozása
         GameObject replacement = Instantiate(_replacement, transform.position, transform.rotation);
 
-        // --- ÚJ RÉSZ: A szilánkok (darabok) törlése 5 másodperc múlva ---
-        Destroy(replacement, 5f);
+        if (!neverDestroyPieces)
+        {
+            Destroy(replacement, durability);
+        }
 
         var rbs = replacement.GetComponentsInChildren<Rigidbody>();
         foreach (var rb in rbs)
@@ -64,7 +70,6 @@ public class Breakable : MonoBehaviour
             rb.AddForce(randomScatter * _collisionMultiplier * 0.5f, ForceMode.Impulse);
         }
 
-        // Az eredeti (most már láthatatlan) doboz törlése
         Destroy(gameObject);
     }
 }

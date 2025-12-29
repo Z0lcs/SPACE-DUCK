@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e56966e50bc013c44ae226cff828bf34, type: 3}
+  m_Name: RedDuck
+  m_EditorClassIdentifier: 
+  itemName: RedDuck
+  itemDescription: 
+  icon: {fileID: 21300000, guid: c100208a74c58584fa7997bb92a26292, type: 3}
+  maxStackSize: 10
+  itemPrefab: {fileID: 4290877901623592830, guid: 0bc70a687c7602447b6095a1601a5dab, type: 3}
+  handItemPrefab: {fileID: 4290877901623592830, guid: cf77b8669974b524a8713db85206f270, type: 3}

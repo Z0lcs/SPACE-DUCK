@@ -1,5 +1,5 @@
 using UnityEngine;
-using TMPro; // Kell a szöveghez
+using TMPro; 
 
 public class QuestNofication : MonoBehaviour
 {

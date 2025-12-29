@@ -24,8 +24,6 @@ public class LocationZone : MonoBehaviour
                         }
                     }
                 }
-
-                gameObject.SetActive(false);
             }
         }
     }

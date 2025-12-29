@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e56966e50bc013c44ae226cff828bf34, type: 3}
+  m_Name: "Tart\xE1ly"
+  m_EditorClassIdentifier: 
+  itemName: "Tart\xE1ly"
+  itemDescription: 
+  icon: {fileID: 21300000, guid: b26341d77009f6c4f82e0ec0fd0a938f, type: 3}
+  maxStackSize: 2
+  itemPrefab: {fileID: 7812671868446057205, guid: 3fc9c70d542c76647afe8a1854057a53, type: 3}
+  handItemPrefab: {fileID: 7812671868446057205, guid: 943f2ecbd95ccce45a717bcffab32fc2, type: 3}

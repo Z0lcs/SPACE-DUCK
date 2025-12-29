@@ -144,7 +144,7 @@ public class QuestManager : MonoBehaviour
             return "Kész";
 
         if (objective.targetItem != null || objective.targetKey != null)
-            return $"{currentAmount}/{objective.requiredAmount}";
+            return $"{currentAmount}l{objective.requiredAmount}";
 
         return "Folyamatban";
     }
