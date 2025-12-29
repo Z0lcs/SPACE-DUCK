@@ -49,8 +49,10 @@ public partial class Inventory : MonoBehaviour
         inventorySlots.AddRange(inventorySlotParent.GetComponentsInChildren<Slot>());
         hotbarSlots.AddRange(hotbarObj.GetComponentsInChildren<Slot>());
 
-        allSlots.AddRange(inventorySlots);
+        // Fontos: Itt az allSlots-ban is a hotbar legyen elöl, 
+        // hogy a GetItemQuantity és egyéb keresõk is konzisztensek legyenek
         allSlots.AddRange(hotbarSlots);
+        allSlots.AddRange(inventorySlots);
     }
 
     private void Start()
@@ -86,7 +88,6 @@ public partial class Inventory : MonoBehaviour
             {
                 HandleHotbarSelection();
                 HandleDropEquippedItem();
-                // ÚJ: Tárgy használatának kezelése
                 HandleItemUsage();
             }
         }
@@ -95,13 +96,10 @@ public partial class Inventory : MonoBehaviour
         HandleRightClickSplit();
     }
 
-    // --- HASZNÁLATI LOGIKA ---
     private void HandleItemUsage()
     {
-        // Ne használjuk a tárgyat, ha az inventory UI nyitva van
         if (container.activeInHierarchy || isDragging) return;
 
-        // Bal egérgomb kattintás
         if (Mouse.current.rightButton.wasPressedThisFrame)
         {
             Slot equippedSlot = hotbarSlots[equippedHotbarIndex];
@@ -109,18 +107,15 @@ public partial class Inventory : MonoBehaviour
             if (equippedSlot.HasItem())
             {
                 InventoryItemSO item = equippedSlot.GetItem();
-
-                // Meghívjuk a ScriptableObject Use függvényét
                 bool consumed = item.Use();
 
                 if (consumed)
                 {
-                    // Ha elfogyasztottuk (pl pizza), csökkentjük a darabszámot
                     int remaining = equippedSlot.GetAmount() - 1;
                     if (remaining <= 0)
                     {
                         equippedSlot.ClearSlot();
-                        EquipHandItem(); // Modell törlése a kézbõl
+                        EquipHandItem();
                     }
                     else
                     {
@@ -132,10 +127,66 @@ public partial class Inventory : MonoBehaviour
         }
     }
 
+    // --- MÓDOSÍTOTT ADDIITEM METÓDUS ---
+    public void AddItem(InventoryItemSO itemToAdd, int amount)
+    {
+        int remaining = amount;
+
+        // 1. LÉPÉS: Meglévõ stackek keresése ELÕSZÖR a HOTBARON, aztán az Inventoryban
+        foreach (Slot slot in allSlots) // Mivel az Awake-ben megfordítottuk a sorrendet, ez jó
+        {
+            if (slot.HasItem() && slot.GetItem() == itemToAdd)
+            {
+                int currentAmount = slot.GetAmount();
+                int spaceLeft = itemToAdd.maxStackSize - currentAmount;
+                if (spaceLeft > 0)
+                {
+                    int amountToFill = Mathf.Min(spaceLeft, remaining);
+                    slot.SetItem(itemToAdd, currentAmount + amountToFill);
+                    remaining -= amountToFill;
+                    if (remaining <= 0) break;
+                }
+            }
+        }
+
+        // 2. LÉPÉS: Ha még maradt tárgy, üres hely keresése ELÕSZÖR a HOTBARON
+        if (remaining > 0)
+        {
+            // Elõször csak a hotbart nézzük végig üres helyért
+            foreach (Slot slot in hotbarSlots)
+            {
+                if (!slot.HasItem())
+                {
+                    int amountToPlace = Mathf.Min(itemToAdd.maxStackSize, remaining);
+                    slot.SetItem(itemToAdd, amountToPlace);
+                    remaining -= amountToPlace;
+                    if (remaining <= 0) break;
+                }
+            }
+        }
+
+        // 3. LÉPÉS: Ha a hotbar betelt, mehet az Inventory üres helyeire
+        if (remaining > 0)
+        {
+            foreach (Slot slot in inventorySlots)
+            {
+                if (!slot.HasItem())
+                {
+                    int amountToPlace = Mathf.Min(itemToAdd.maxStackSize, remaining);
+                    slot.SetItem(itemToAdd, amountToPlace);
+                    remaining -= amountToPlace;
+                    if (remaining <= 0) break;
+                }
+            }
+        }
+
+        // Frissítjük a kezünkben lévõ tárgyat, ha épp abba a slotba került valami, amit fogunk
+        EquipHandItem();
+    }
+
     private void PerformInteractionDetection()
     {
         ResetHighlight();
-
         Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, pickupRange, ~excludeLayers))
         {
@@ -229,39 +280,6 @@ public partial class Inventory : MonoBehaviour
         if (!isOpen)
         {
             foreach (var slot in allSlots) slot.hovering = false;
-        }
-    }
-
-    public void AddItem(InventoryItemSO itemToAdd, int amount)
-    {
-        int remaining = amount;
-        foreach (Slot slot in allSlots)
-        {
-            if (slot.HasItem() && slot.GetItem() == itemToAdd)
-            {
-                int currentAmount = slot.GetAmount();
-                int spaceLeft = itemToAdd.maxStackSize - currentAmount;
-                if (spaceLeft > 0)
-                {
-                    int amountToFill = Mathf.Min(spaceLeft, remaining);
-                    slot.SetItem(itemToAdd, currentAmount + amountToFill);
-                    remaining -= amountToFill;
-                    if (remaining <= 0) break;
-                }
-            }
-        }
-        if (remaining > 0)
-        {
-            foreach (Slot slot in allSlots)
-            {
-                if (!slot.HasItem())
-                {
-                    int amountToPlace = Mathf.Min(itemToAdd.maxStackSize, remaining);
-                    slot.SetItem(itemToAdd, amountToPlace);
-                    remaining -= amountToPlace;
-                    if (remaining <= 0) break;
-                }
-            }
         }
     }
 
