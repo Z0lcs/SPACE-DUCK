@@ -12,7 +12,9 @@ public class Breakable : MonoBehaviour
     [Header("Cleanup")]
     [Tooltip("Ha be van pipálva, a törmelék sosem tűnik el.")]
     [SerializeField] private bool neverDestroyPieces = false;
-    [SerializeField] private float durability = 5f;
+    [SerializeField] private float duration = 5f;
+    [Tooltip("Hány csoport/darab jöjjön létre a széttöréskor.")]
+    [SerializeField] private int amount = 1;
 
     [Header("Audio")]
     public AudioSource playerAudioSource;
@@ -22,9 +24,6 @@ public class Breakable : MonoBehaviour
     public float visualBreakDelay = 1.0f;
 
     private bool _broken;
-
-    // --- ÚJ VÁLTOZÓ A SZÁMLÁLÁSHOZ ---
-    // A 'static' miatt minden Breakable script közösen használja ezt a számot
     private static int totalHitCount = 0;
 
     void Update()
@@ -40,17 +39,15 @@ public class Breakable : MonoBehaviour
                 {
                     _broken = true;
 
-                    // Ütésszámláló növelése minden találatnál
                     totalHitCount++;
 
-                    // Ellenőrizzük, hogy elértük-e az 5 ütést
                     if (totalHitCount >= 5)
                     {
                         if (HungerManager.Instance != null)
                         {
                             HungerManager.Instance.DecreaseHunger(1);
                         }
-                        totalHitCount = 0; // Visszaállítás 0-ra az éhségcsökkenés után
+                        totalHitCount = 0;
                     }
 
                     StartCoroutine(BreakSequence(hit.point));
@@ -72,20 +69,27 @@ public class Breakable : MonoBehaviour
         if (TryGetComponent<Renderer>(out var rend)) rend.enabled = false;
         if (TryGetComponent<Collider>(out var coll)) coll.enabled = false;
 
-        GameObject replacement = Instantiate(_replacement, transform.position, transform.rotation);
-
-        if (!neverDestroyPieces)
+        for (int i = 0; i < amount; i++)
         {
-            Destroy(replacement, durability);
-        }
+            Vector3 spawnOffset = (amount > 1) ? new Vector3(Random.Range(-4.0f, 4.0f), 0, Random.Range(-4.0f, 4.0f)) : Vector3.zero;
 
-        var rbs = replacement.GetComponentsInChildren<Rigidbody>();
-        foreach (var rb in rbs)
-        {
-            rb.AddExplosionForce(_breakForce * _collisionMultiplier, impactPoint, 2);
+            GameObject replacement = Instantiate(_replacement, transform.position + spawnOffset, Quaternion.identity);
 
-            Vector3 randomScatter = new Vector3(Random.Range(-1f, 1f), Random.Range(0.5f, 2f), Random.Range(-1f, 1f));
-            rb.AddForce(randomScatter * _collisionMultiplier * 0.5f, ForceMode.Impulse);
+            if (!neverDestroyPieces)
+            {
+                Destroy(replacement, duration);
+            }
+
+            var rbs = replacement.GetComponentsInChildren<Rigidbody>();
+            foreach (var rb in rbs)
+            {
+                rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
+                rb.AddExplosionForce(_breakForce * _collisionMultiplier, impactPoint, 10);
+
+                Vector3 randomScatter = new Vector3(Random.Range(-1.5f, 1.5f), 0.1f, Random.Range(-1.5f, 1.5f));
+                rb.AddForce(randomScatter * _collisionMultiplier, ForceMode.Impulse);
+            }
         }
 
         Destroy(gameObject);

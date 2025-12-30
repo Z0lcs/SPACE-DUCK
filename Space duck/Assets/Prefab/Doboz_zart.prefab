@@ -101,10 +101,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed4bb536a9f3b9345a79b19c7429deb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _replacement: {fileID: 124516012600995044, guid: 47fbea57f14d3db438d77f825b381817, type: 3}
+  _replacement: {fileID: 8736323915175707497, guid: e6ff80ad711719f478f8655569cb532b, type: 3}
   _breakForce: 2
   _collisionMultiplier: 100
   _breakRange: 10
+  neverDestroyPieces: 0
+  duration: 5
+  amount: 1
   playerAudioSource: {fileID: 0}
   boxExplosionSound: {fileID: 8300000, guid: cd0bc0a9345deb340b07a9a62d234a4f, type: 3}
   visualBreakDelay: 1
