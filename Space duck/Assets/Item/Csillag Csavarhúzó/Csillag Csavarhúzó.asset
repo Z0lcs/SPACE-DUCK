@@ -16,5 +16,6 @@ MonoBehaviour:
   itemDescription: 
   icon: {fileID: 21300000, guid: 0a122fe5242f96045880f5b758c37f0c, type: 3}
   maxStackSize: 1
-  itemPrefab: {fileID: 4835215418485772293, guid: 5fe2d09fd007f40458deca2de4ca1df6, type: 3}
-  handItemPrefab: {fileID: 4835215418485772293, guid: cda90b70c97793742b9b4ecb246ef266, type: 3}
+  itemPrefab: {fileID: 4811829573226994484, guid: e5d93b2beea46b24d896f55ce1b44e8c, type: 3}
+  handItemPrefab: {fileID: 4811829573226994484, guid: a84e9905a0e444d4981e75bff0f135f3, type: 3}
+  itemType: 0
