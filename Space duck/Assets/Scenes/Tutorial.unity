@@ -10244,7 +10244,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -22969,7 +22970,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -24806,7 +24808,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3514938679760608708, guid: 0bc70a687c7602447b6095a1601a5dab, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -432.07944
+      value: -431.962
       objectReference: {fileID: 0}
     - target: {fileID: 3514938679760608708, guid: 0bc70a687c7602447b6095a1601a5dab, type: 3}
       propertyPath: m_LocalPosition.z
@@ -26437,7 +26439,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1563646656168677110, guid: 10cf9d2453746cc4eb10ecff903f1f31, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -432.26468
+      value: -430.97
       objectReference: {fileID: 0}
     - target: {fileID: 1563646656168677110, guid: 10cf9d2453746cc4eb10ecff903f1f31, type: 3}
       propertyPath: m_LocalPosition.z
@@ -26745,7 +26747,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3063932895498006563, guid: e71ac23485e7d804c9afc048fa1f3c78, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -427.51468
+      value: -426.14
       objectReference: {fileID: 0}
     - target: {fileID: 3063932895498006563, guid: e71ac23485e7d804c9afc048fa1f3c78, type: 3}
       propertyPath: m_LocalPosition.z
