@@ -1,3 +1,4 @@
+using NUnit.Framework.Interfaces;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -36,17 +37,26 @@ public partial class Inventory
 
     private void EquipHandItem()
     {
-        // Elõzõ tárgy törlése a kézbõl
         if (currentHandItem != null) Destroy(currentHandItem);
 
         Slot equippedSlot = hotbarSlots[equippedHotbarIndex];
 
-        // Ha üres a slot, vagy nincs prefabja, nem rakunk semmit a kézbe
-        if (!equippedSlot.HasItem() || equippedSlot.GetItem().handItemPrefab == null) return;
+        // Ellenõrzés
+        if (!equippedSlot.HasItem()) return;
 
-        // Új tárgy létrehozása a 'hand' Transform alatt
-        currentHandItem = Instantiate(equippedSlot.GetItem().handItemPrefab, hand);
-        currentHandItem.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+        // Itt a titok: HASZNÁLD AZ InventoryItemSO típust az Item helyett!
+        InventoryItemSO itemData = equippedSlot.GetItem();
+
+        if (itemData.handItemPrefab == null) return;
+
+        // 1. Példányosítás
+        currentHandItem = Instantiate(itemData.handItemPrefab, hand);
+
+        // 2. Beállítás az SO-ból
+        // FIGYELEM: Ha az InventoryItemSO-ban még nincsenek benne ezek a változók, 
+        // akkor add hozzá õket az InventoryItemSO scriptben!
+        currentHandItem.transform.localPosition = itemData.handPositionOffset;
+        currentHandItem.transform.localEulerAngles = itemData.handRotationOffset;
     }
 
     private void HandleDropEquippedItem()

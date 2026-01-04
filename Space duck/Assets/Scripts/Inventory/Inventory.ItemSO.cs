@@ -12,6 +12,8 @@ public class InventoryItemSO : ScriptableObject
     public int maxStackSize = 1;
     public GameObject itemPrefab;
     public GameObject handItemPrefab;
+    public Vector3 handPositionOffset; 
+    public Vector3 handRotationOffset; 
 
     [Header("Usage Settings")]
     public ItemType itemType; 
