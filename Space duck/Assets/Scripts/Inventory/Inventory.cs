@@ -33,7 +33,7 @@ public partial class Inventory : MonoBehaviour
 
     private List<Slot> inventorySlots = new List<Slot>();
     private List<Slot> hotbarSlots = new List<Slot>();
-    private List<Slot> allSlots = new List<Slot>();
+    public List<Slot> allSlots = new List<Slot>();
 
     private Slot dragedSlot = null;
     private bool isDragging = false;
