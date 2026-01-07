@@ -17270,7 +17270,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5200730519403446863, guid: e046763a54babb84a8826ee16d34617e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 26
+      value: 182.6
       objectReference: {fileID: 0}
     - target: {fileID: 5200730519403446863, guid: e046763a54babb84a8826ee16d34617e, type: 3}
       propertyPath: m_LocalPosition.y
@@ -17278,7 +17278,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5200730519403446863, guid: e046763a54babb84a8826ee16d34617e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 96.6
+      value: 178.7
       objectReference: {fileID: 0}
     - target: {fileID: 5200730519403446863, guid: e046763a54babb84a8826ee16d34617e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -51639,6 +51639,7 @@ MonoBehaviour:
     m_Bits: 8
   equppedOpacity: 0.9
   normalOpacity: 0.58
+  allSlots: []
 --- !u!1 &2048250095 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100000, guid: 4c14ffc6a7f79e942885227ac141590c, type: 3}
@@ -51884,6 +51885,9 @@ MonoBehaviour:
   craftingPanel: {fileID: 1613254022}
   slot1: {fileID: 1468395690}
   slot2: {fileID: 1220045371}
+  recipeBookPanel: {fileID: 0}
+  recipeContainer: {fileID: 0}
+  recipeCardPrefab: {fileID: 0}
   recipes:
   - {fileID: 11400000, guid: 3bff24da430205f4eb9857d6b3af543b, type: 2}
 --- !u!65 &2062130647
@@ -51968,7 +51972,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2062130645}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -45.1}
+  m_LocalPosition: {x: 0, y: 0, z: 21.69}
   m_LocalScale: {x: 1.3333334, y: 1.3333334, z: 1.3333334}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -51976,7 +51980,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -57.4, y: 1.8}
+  m_AnchoredPosition: {x: 127.02, y: 0.17}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &2063959250

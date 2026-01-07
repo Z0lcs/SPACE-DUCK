@@ -13,11 +13,8 @@ public class TableRecipeSO : ScriptableObject
 
     public bool Matches(InventoryItemSO item1, int qty1, InventoryItemSO item2, int qty2)
     {
-        if (item1 == null || item2 == null) return false;
-
-        bool variantA = (item1 == inputA && qty1 >= amountA) && (item2 == inputB && qty2 >= amountB);
-        bool variantB = (item1 == inputB && qty1 >= amountB) && (item2 == inputA && qty2 >= amountA);
-
-        return variantA || variantB;
+        bool order1 = (item1 == inputA && qty1 >= amountA && item2 == inputB && qty2 >= amountB);
+        bool order2 = (item1 == inputB && qty1 >= amountB && item2 == inputA && qty2 >= amountA);
+        return order1 || order2;
     }
 }
