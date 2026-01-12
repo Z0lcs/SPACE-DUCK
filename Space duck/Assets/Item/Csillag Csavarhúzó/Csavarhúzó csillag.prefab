@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 091905d68933ccd47a311e86e47b4f4a, type: 3}
       propertyPath: m_LocalScale.x
-      value: 5
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 091905d68933ccd47a311e86e47b4f4a, type: 3}
       propertyPath: m_LocalScale.y
-      value: 5
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 091905d68933ccd47a311e86e47b4f4a, type: 3}
       propertyPath: m_LocalScale.z
-      value: 5
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 091905d68933ccd47a311e86e47b4f4a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -77,7 +77,7 @@ PrefabInstance:
       addedObject: {fileID: 3256149092085416029}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 091905d68933ccd47a311e86e47b4f4a, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3659123628533998012}
+      addedObject: {fileID: 4574664793677461637}
   m_SourcePrefab: {fileID: 100100000, guid: 091905d68933ccd47a311e86e47b4f4a, type: 3}
 --- !u!1 &4811829573226994484 stripped
 GameObject:
@@ -98,7 +98,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: e18e4b7fde58eb74c84d568605da45ed, type: 2}
   amount: 1
---- !u!64 &3659123628533998012
+--- !u!64 &4574664793677461637
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -114,9 +114,9 @@ MeshCollider:
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
-  m_ProvidesContacts: 1
+  m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 2083493230540558963, guid: 7f518b6fa1682374987b52b4a1eca916, type: 3}
+  m_Mesh: {fileID: 2083493230540558963, guid: 091905d68933ccd47a311e86e47b4f4a, type: 3}
