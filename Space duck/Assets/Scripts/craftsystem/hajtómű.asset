@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9fa568520b32a244392ec08b57e97cc1, type: 3}
-  m_Name: redduck
+  m_Name: "hajt\xF3m\u0171"
   m_EditorClassIdentifier: 
-  inputA: {fileID: 11400000, guid: 8cd07b393622cfe4ebf39f81995bb65a, type: 2}
+  inputA: {fileID: 11400000, guid: 8287e02952e19024ea040fa19a45020f, type: 2}
   amountA: 1
-  inputB: {fileID: 11400000, guid: 8cd07b393622cfe4ebf39f81995bb65a, type: 2}
+  inputB: {fileID: 11400000, guid: 0c49b41e3820b624ba0c772c32e97565, type: 2}
   amountB: 1
-  result: {fileID: 11400000, guid: 8cd07b393622cfe4ebf39f81995bb65a, type: 2}
+  result: {fileID: 11400000, guid: bf5c6d09ff1c85c4eaa87c1521def52a, type: 2}
   resultAmount: 1
