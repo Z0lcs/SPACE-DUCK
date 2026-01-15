@@ -80,7 +80,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3475289c245cc5e4f8ba7b204cabf14e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 0}
+  item: {fileID: 11400000, guid: bf5c6d09ff1c85c4eaa87c1521def52a, type: 2}
   amount: 1
 --- !u!64 &7514907372726679605
 MeshCollider:
