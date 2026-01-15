@@ -12,13 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f421ba9b15377f448bc5bd279a39bd0, type: 3}
   m_Name: "Hajt\xF3m\u0171"
   m_EditorClassIdentifier: 
-  questName: "Alkatr\xE9szek"
-  questDescription: "A vonatnak p\xE1r alkatr\xE9sze m\xE9g valahol itt van. Kell
-    m\xE9g a tart\xE1ly \xE9s a hajt\xF3."
+  questName: "Utols\xF3 l\xE9p\xE9s"
+  questDescription: "M\xE1r minden k\xE9sz! Csak egy dolog van h\xE1tra: tedd a hajt\xF3m\xFBvet
+    a l\xE1d\xE1ba!"
   questObjectives:
-  - description: "Tart\xE1ly"
-    target: {fileID: 11400000, guid: 0c49b41e3820b624ba0c772c32e97565, type: 2}
+  - description: "Hajt\xF3m\u0171"
+    target: {fileID: 11400000, guid: bf5c6d09ff1c85c4eaa87c1521def52a, type: 2}
     requiredAmount: 2
-  - description: "Hajt\xF3"
-    target: {fileID: 11400000, guid: 8287e02952e19024ea040fa19a45020f, type: 2}
-    requiredAmount: 2
+    mustBeInChest: 1
+    modelID: "Hajt\xF3m\u0171vek"

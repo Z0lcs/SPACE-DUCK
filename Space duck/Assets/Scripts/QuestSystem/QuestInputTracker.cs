@@ -25,7 +25,7 @@ public class QuestInputTracker : MonoBehaviour
         {
             foreach (QuestObjective objective in quest.questObjectives)
             {
-                if (objective.targetKey != null)
+                if (objective.targetKey != null || objective.targetItem != null)
                 {
                     QuestManager.Instance.UpdateObjectiveProgress(quest, objective);
                 }

@@ -92,4 +92,28 @@ public class Chest : MonoBehaviour
         }
         return total;
     }
+    public void RemoveItemsFromChest(InventoryItemSO itemSO, int amountToRemove)
+    {
+        int remaining = amountToRemove;
+        foreach (Slot slot in chestSlots)
+        {
+            if (remaining <= 0) break;
+
+            if (slot != null && slot.HasItem() && slot.GetItem() == itemSO)
+            {
+                int amountInSlot = slot.GetAmount();
+
+                if (amountInSlot <= remaining)
+                {
+                    remaining -= amountInSlot;
+                    slot.ClearSlot();
+                }
+                else
+                {
+                    slot.RemoveAmount(remaining);
+                    remaining = 0;
+                }
+            }
+        }
+    }
 }
