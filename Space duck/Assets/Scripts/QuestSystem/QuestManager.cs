@@ -10,6 +10,7 @@ public class QuestManager : MonoBehaviour
     private Dictionary<QuestSO, Dictionary<QuestObjective, int>> questProgress = new();
     private HashSet<QuestSO> completedQuests = new();
     public static event Action<QuestSO> OnQuestCompleted;
+    private VideoUiController videoController;
     [Header("Questek")]
     public List<QuestSO> allAvailableQuests; 
     private void Awake()
@@ -34,6 +35,7 @@ public class QuestManager : MonoBehaviour
                 AcceptQuest(allAvailableQuests[i]);
             }
         }
+        videoController = GetComponent<VideoUiController>();
     }
     public void AcceptQuest(QuestSO newQuest)
     {
@@ -143,7 +145,7 @@ public class QuestManager : MonoBehaviour
                 {
                     if (qm.modelID == objective.modelID)
                     {
-                        qm.gameObject.SetActive(true); 
+                        qm.gameObject.SetActive(true);
                     }
                 }
             }
@@ -170,6 +172,11 @@ public class QuestManager : MonoBehaviour
         }
 
         OnQuestCompleted?.Invoke(questSO);
+        
+        if (questSO.questName == "Utolsó lépés" && videoController != null)
+        {
+            videoController.StartQuestVideoSequence(30f);
+        }
     }
     public bool IsQuestCompleted(QuestSO questSO)
     {

@@ -6,19 +6,21 @@ public class MenuController : MonoBehaviour
     public GameObject mainMenuPanel;
     public GameObject dialogueCanvas;
     public GameObject kepregenyObject;
-    public GameObject itemsObject; // ÚJ: Az Items objektum helye
+    public GameObject itemsObject;
+
+    [Header("Referenciák")]
+    public VideoUiController videoUiController; 
 
     [Header("Játékos Irányítás")]
     public MonoBehaviour playerMovementScript;
 
     private bool isDialogueEnabled = true;
     private bool isKepregenyEnabled = true;
-    private bool isItemsEnabled = true; // ÚJ állapot
+    private bool isItemsEnabled = true;
     private bool isMenuOpen = true;
 
     void Awake()
     {
-        // Mindent lekapcsolunk az indítás pillanatában
         if (dialogueCanvas != null) dialogueCanvas.SetActive(false);
         if (kepregenyObject != null) kepregenyObject.SetActive(false);
         if (itemsObject != null) itemsObject.SetActive(false);
@@ -38,7 +40,6 @@ public class MenuController : MonoBehaviour
 
     void Update()
     {
-        // Csak akkor kényszerítjük a kurzort, ha nyitva a menü
         if (isMenuOpen)
         {
             if (Cursor.lockState != CursorLockMode.None || !Cursor.visible)
@@ -54,27 +55,27 @@ public class MenuController : MonoBehaviour
         Cursor.visible = true;
     }
 
-    // Toggle függvények a UI-hoz
     public void SetDialogue(bool value) => isDialogueEnabled = value;
     public void SetKepregeny(bool value) => isKepregenyEnabled = value;
-    public void SetItems(bool value) => isItemsEnabled = value; // ÚJ
+    public void SetItems(bool value) => isItemsEnabled = value;
 
     public void PlayGame()
     {
-        // Beállítások érvényesítése
         if (dialogueCanvas != null) dialogueCanvas.SetActive(isDialogueEnabled);
         if (kepregenyObject != null) kepregenyObject.SetActive(isKepregenyEnabled);
         if (itemsObject != null) itemsObject.SetActive(isItemsEnabled);
 
-        // Menü bezárása
+        if (isKepregenyEnabled && videoUiController != null)
+        {
+            videoUiController.PlayIntro();
+        }
+
         if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
         isMenuOpen = false;
 
-        // Játék indítása
         if (playerMovementScript != null) playerMovementScript.enabled = true;
         Time.timeScale = 1f;
 
-        // Kurzor elrejtése a játékhoz
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
