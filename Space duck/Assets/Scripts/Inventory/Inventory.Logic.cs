@@ -8,7 +8,7 @@ public partial class Inventory
     {
         int remaining = amount;
 
-        // 1. Stackelés meglévõ helyre (allSlots sorrendje miatt Hotbar az elsõ)
+        
         foreach (Slot slot in allSlots)
         {
             if (slot.HasItem() && slot.GetItem() == itemToAdd)
@@ -25,10 +25,10 @@ public partial class Inventory
             }
         }
 
-        // 2. Új slot keresése (Hotbar -> Inventory)
+        
         if (remaining > 0)
         {
-            foreach (Slot slot in allSlots) // Az allSlots már tartalmazza mindkettõt a jó sorrendben
+            foreach (Slot slot in allSlots) 
             {
                 if (!slot.HasItem())
                 {
