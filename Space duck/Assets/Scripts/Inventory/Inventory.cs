@@ -59,6 +59,7 @@ public partial class Inventory : MonoBehaviour
 
     void Update()
     {
+        
         bool inventoryOpen = container.activeInHierarchy;
 
         if (inventoryOpen || Time.timeScale > 0)

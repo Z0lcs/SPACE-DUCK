@@ -24,4 +24,6 @@ public class QuestObjective
     public KeySO targetKey => target as KeySO;
 
     public int requiredAmount;
+    public bool mustBeInChest;
+    public string modelID;
 }

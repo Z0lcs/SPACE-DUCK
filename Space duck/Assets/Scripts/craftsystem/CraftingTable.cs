@@ -13,11 +13,11 @@ public class CraftingTable : MonoBehaviour
     public Slot slot1;
     public Slot slot2;
 
-    [Header("Recept Könyv UI")]
-    public GameObject recipeBookPanel;
-    public Transform recipeContainer;
-    public GameObject recipeCardPrefab;
-    private bool recipeBookOpen = false;
+    //[Header("Recept Könyv UI")]
+    //public GameObject recipeBookPanel;
+    //public Transform recipeContainer;
+    //public GameObject recipeCardPrefab;
+    //private bool recipeBookOpen = false;
 
     [Header("Receptek")]
     public List<TableRecipeSO> recipes;
@@ -26,12 +26,15 @@ public class CraftingTable : MonoBehaviour
     {
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null) player = playerObj.transform;
-        GenerateRecipeList();
+        //GenerateRecipeList();
     }
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape)) CloseTable();
         if (player == null || !Input.GetKeyDown(openKey)) return;
+        
+        
 
         float distance = Vector3.Distance(transform.position, player.position);
         if (distance <= interactionRange)
@@ -142,21 +145,21 @@ public class CraftingTable : MonoBehaviour
         }
     }
 
-    void GenerateRecipeList()
-    {
-        foreach (Transform child in recipeContainer) Destroy(child.gameObject);
-        foreach (TableRecipeSO recipe in recipes)
-        {
-            GameObject newCard = Instantiate(recipeCardPrefab, recipeContainer);
-            newCard.GetComponent<RecipeUIElement>()?.Setup(recipe, this);
-        }
-    }
+    //void GenerateRecipeList()
+    //{
+    //    foreach (Transform child in recipeContainer) Destroy(child.gameObject);
+    //    foreach (TableRecipeSO recipe in recipes)
+    //    {
+    //        GameObject newCard = Instantiate(recipeCardPrefab, recipeContainer);
+    //        newCard.GetComponent<RecipeUIElement>()?.Setup(recipe, this);
+    //    }
+    //}
 
-    public void ToggleRecipeBook()
-    {
-        recipeBookOpen = !recipeBookOpen;
-        recipeBookPanel.SetActive(recipeBookOpen);
-    }
+    //public void ToggleRecipeBook()
+    //{
+    //    recipeBookOpen = !recipeBookOpen;
+    //    recipeBookPanel.SetActive(recipeBookOpen);
+    //}
 
     public void OpenTable()
     {
@@ -172,8 +175,8 @@ public class CraftingTable : MonoBehaviour
         ClearToInventory(slot1);
         ClearToInventory(slot2);
         craftingPanel.SetActive(false);
-        recipeBookPanel.SetActive(false);
-        recipeBookOpen = false;
+        //recipeBookPanel.SetActive(false);
+        //recipeBookOpen = false;
         Inventory.Instance.ToggleInventoryUI(false);
         Inventory.Instance.UnregisterExternalSlots(new List<Slot> { slot1, slot2 });
         Cursor.lockState = CursorLockMode.Locked;

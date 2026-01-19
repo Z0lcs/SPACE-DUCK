@@ -10,6 +10,7 @@ public class QuestManager : MonoBehaviour
     private Dictionary<QuestSO, Dictionary<QuestObjective, int>> questProgress = new();
     private HashSet<QuestSO> completedQuests = new();
     public static event Action<QuestSO> OnQuestCompleted;
+    private VideoUiController videoController;
     [Header("Questek")]
     public List<QuestSO> allAvailableQuests; 
     private void Awake()
@@ -34,6 +35,7 @@ public class QuestManager : MonoBehaviour
                 AcceptQuest(allAvailableQuests[i]);
             }
         }
+        videoController = GetComponent<VideoUiController>();
     }
     public void AcceptQuest(QuestSO newQuest)
     {
@@ -74,7 +76,21 @@ public class QuestManager : MonoBehaviour
         }
         else if (objective.targetItem != null)
         {
-            int currentCount = Inventory.Instance.GetItemQuantity(objective.targetItem);
+            int currentCount = 0;
+
+            if (objective.mustBeInChest)
+            {
+                Chest openChest = GameObject.FindAnyObjectByType<Chest>();
+                if (openChest != null)
+                {
+                    currentCount = openChest.GetItemQuantityInChest(objective.targetItem);
+                }
+            }
+            else
+            {
+                currentCount = Inventory.Instance.GetItemQuantity(objective.targetItem);
+            }
+
             progressDict[objective] = Mathf.Min(currentCount, objective.requiredAmount);
         }
 
@@ -110,27 +126,57 @@ public class QuestManager : MonoBehaviour
     {
         if (questSO == null || completedQuests.Contains(questSO)) return;
 
+        foreach (var objective in questSO.questObjectives)
+        {
+            if (objective.mustBeInChest && objective.targetItem != null)
+            {
+                Chest openChest = GameObject.FindAnyObjectByType<Chest>();
+                if (openChest != null)
+                {
+                    openChest.RemoveItemsFromChest(objective.targetItem, objective.requiredAmount);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(objective.modelID))
+            {
+                QuestModel[] allQuestModels = Resources.FindObjectsOfTypeAll<QuestModel>();
+
+                foreach (QuestModel qm in allQuestModels)
+                {
+                    if (qm.modelID == objective.modelID)
+                    {
+                        qm.gameObject.SetActive(true);
+                    }
+                }
+            }
+        }
+
         activeQuests.Remove(questSO);
         completedQuests.Add(questSO);
-
 
         if (questProgress.ContainsKey(questSO))
         {
             questProgress.Remove(questSO);
         }
+
         foreach (QuestSO q in allAvailableQuests)
         {
             if (!activeQuests.Contains(q) && !completedQuests.Contains(q))
             {
-                if (activeQuests.Count < 5) 
+                if (activeQuests.Count < 5)
                 {
                     AcceptQuest(q);
-                    break; 
+                    break;
                 }
             }
         }
 
         OnQuestCompleted?.Invoke(questSO);
+        
+        if (questSO.questName == "Utolsó lépés" && videoController != null)
+        {
+            videoController.StartQuestVideoSequence(30f);
+        }
     }
     public bool IsQuestCompleted(QuestSO questSO)
     {
