@@ -8,33 +8,30 @@ public class CraftingTable : MonoBehaviour
     public KeyCode openKey = KeyCode.E;
     private Transform player;
 
-    [Header("UI Referenciák")]
+    [Header("UI & Slots")]
     public GameObject craftingPanel;
-    public Slot slot1;
-    public Slot slot2;
+    public List<Slot> containerSlots; // A gép belsõ slotjai (amiket a jobb oldalra tettél)
+    public List<TableRecipeSO> recipes; // A receptek listája (SO assetek)
 
-    //[Header("Recept Könyv UI")]
-    //public GameObject recipeBookPanel;
-    //public Transform recipeContainer;
-    //public GameObject recipeCardPrefab;
-    //private bool recipeBookOpen = false;
-
-    [Header("Receptek")]
-    public List<TableRecipeSO> recipes;
+    [Header("UI Automatikus Generálás")]
+    public GameObject recipeButtonPrefab; // Az "Engram" gomb prefabja
+    public Transform recipeContainer;     // A Scroll View 'Content' objektuma
 
     void Start()
     {
+        // Játékos keresése a távolság ellenõrzéséhez
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null) player = playerObj.transform;
-        //GenerateRecipeList();
+
+        // Receptek legenerálása a UI-ra az indításkor
+        GenerateRecipes();
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape)) CloseTable();
+
         if (player == null || !Input.GetKeyDown(openKey)) return;
-        
-        
 
         float distance = Vector3.Distance(transform.position, player.position);
         if (distance <= interactionRange)
@@ -44,141 +41,116 @@ public class CraftingTable : MonoBehaviour
         }
     }
 
-    // --- JAVÍTOTT CRAFTING LOGIKA ---
+    // --- CRAFTING LOGIKA ---
 
-    public void Craft()
+    public void Craft(TableRecipeSO recipe)
     {
-        if (!slot1.HasItem() || !slot2.HasItem()) return;
+        if (recipe == null) return;
 
-        InventoryItemSO item1 = slot1.GetItem();
-        InventoryItemSO item2 = slot2.GetItem();
-        int qty1 = slot1.GetAmount();
-        int qty2 = slot2.GetAmount();
-
-        TableRecipeSO foundRecipe = recipes.Find(r => r.Matches(item1, qty1, item2, qty2));
-
-        if (foundRecipe != null)
+        // Ellenõrizzük, hogy a gép belsõ slotjaiban (containerSlots) van-e elég anyag
+        if (recipe.CanCraft(containerSlots))
         {
-            // Kiszámoljuk mennyit kell levonni
-            int take1 = (item1 == foundRecipe.inputA) ? foundRecipe.amountA : foundRecipe.amountB;
-            int take2 = (item2 == foundRecipe.inputB) ? foundRecipe.amountB : foundRecipe.amountA;
+            // 1. Alapanyagok levonása
+            foreach (var ingredient in recipe.ingredients)
+            {
+                ConsumeItems(ingredient.item, ingredient.amount);
+            }
 
-            // ELLENÕRZÉS: Írassuk ki a konzolra!
-            Debug.Log($"LEVONÁS INDUL: Slot1-bõl {take1}, Slot2-bõl {take2}");
+            // 2. Eredmény hozzáadása a gép inventory-jába
+            AddItemToContainer(recipe.result, recipe.resultAmount);
 
-            // Levonjuk slot 1-bõl
-            int newQty1 = qty1 - take1;
-            if (newQty1 <= 0) slot1.ClearSlot();
-            else slot1.SetItem(item1, newQty1);
-
-            // Levonjuk slot 2-bõl
-            int newQty2 = qty2 - take2;
-            if (newQty2 <= 0) slot2.ClearSlot();
-            else slot2.SetItem(item2, newQty2);
-
-            // Eredmény hozzáadása
-            Inventory.Instance.AddItem(foundRecipe.result, foundRecipe.resultAmount);
-            Debug.Log("Sikeres Crafting!");
-        }
-    }
-
-    private void DoConsume(Slot s, int amount)
-    {
-        int startAmount = s.GetAmount();
-        int remaining = startAmount - amount;
-
-        if (remaining <= 0)
-        {
-            s.ClearSlot();
+            Debug.Log($"{recipe.itemName} sikeresen legyártva!");
         }
         else
         {
-            // Itt küldjük el az új adatokat a slotnak
-            s.SetItem(s.GetItem(), remaining);
+            Debug.Log("Nincs elég alapanyag a gépben!");
         }
     }
 
-    // --- RECEPT KÖNYV ÉS FILL LOGIKA ---
-
-    public void FillRecipeSlots(TableRecipeSO recipe)
+    private void ConsumeItems(InventoryItemSO item, int amount)
     {
-        int hasA = Inventory.Instance.GetItemQuantity(recipe.inputA);
-        int hasB = Inventory.Instance.GetItemQuantity(recipe.inputB);
-
-        if (hasA >= recipe.amountA && hasB >= recipe.amountB)
+        int remainingToConsume = amount;
+        foreach (var slot in containerSlots)
         {
-            ClearToInventory(slot1);
-            ClearToInventory(slot2);
-
-            RemoveFromInventoryAndSetSlot(recipe.inputA, recipe.amountA, slot1);
-            RemoveFromInventoryAndSetSlot(recipe.inputB, recipe.amountB, slot2);
-        }
-    }
-
-    private void RemoveFromInventoryAndSetSlot(InventoryItemSO item, int amount, Slot targetSlot)
-    {
-        int remainingToRemove = amount;
-        foreach (Slot s in Inventory.Instance.allSlots)
-        {
-            if (s == slot1 || s == slot2) continue;
-            if (s.HasItem() && s.GetItem() == item)
+            if (slot.HasItem() && slot.GetItem() == item)
             {
-                int take = Mathf.Min(s.GetAmount(), remainingToRemove);
-                int newAmount = s.GetAmount() - take;
-                if (newAmount <= 0) s.ClearSlot();
-                else s.SetItem(item, newAmount);
-                remainingToRemove -= take;
-                if (remainingToRemove <= 0) break;
+                int available = slot.GetAmount();
+                int take = Mathf.Min(available, remainingToConsume);
+
+                int newQty = available - take;
+                if (newQty <= 0) slot.ClearSlot();
+                else slot.SetItem(item, newQty);
+
+                remainingToConsume -= take;
+                if (remainingToConsume <= 0) break;
             }
         }
-        targetSlot.SetItem(item, amount);
     }
 
-    // --- SEGÉDFÜGGVÉNYEK ---
-
-    private void ClearToInventory(Slot s)
+    private void AddItemToContainer(InventoryItemSO item, int amount)
     {
-        if (s.HasItem())
+        // Megpróbáljuk meglévõ stackhez adni a gépen belül
+        foreach (var slot in containerSlots)
         {
-            Inventory.Instance.AddItem(s.GetItem(), s.GetAmount());
-            s.ClearSlot();
+            if (slot.HasItem() && slot.GetItem() == item)
+            {
+                slot.SetItem(item, slot.GetAmount() + amount);
+                return;
+            }
+        }
+
+        // Ha nincs stack, keresünk egy üres helyet a gépben
+        foreach (var slot in containerSlots)
+        {
+            if (!slot.HasItem())
+            {
+                slot.SetItem(item, amount);
+                return;
+            }
         }
     }
 
-    //void GenerateRecipeList()
-    //{
-    //    foreach (Transform child in recipeContainer) Destroy(child.gameObject);
-    //    foreach (TableRecipeSO recipe in recipes)
-    //    {
-    //        GameObject newCard = Instantiate(recipeCardPrefab, recipeContainer);
-    //        newCard.GetComponent<RecipeUIElement>()?.Setup(recipe, this);
-    //    }
-    //}
+    // --- UI ÉS GENERÁLÁS ---
 
-    //public void ToggleRecipeBook()
-    //{
-    //    recipeBookOpen = !recipeBookOpen;
-    //    recipeBookPanel.SetActive(recipeBookOpen);
-    //}
+    public void GenerateRecipes()
+    {
+        // Töröljük a meglévõ gombokat
+        foreach (Transform child in recipeContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // Új gombok létrehozása minden recepthez
+        foreach (TableRecipeSO recipe in recipes)
+        {
+            GameObject newBtn = Instantiate(recipeButtonPrefab, recipeContainer);
+            RecipeButtonUI buttonScript = newBtn.GetComponent<RecipeButtonUI>();
+
+            if (buttonScript != null)
+            {
+                buttonScript.Setup(recipe, this);
+            }
+        }
+    }
 
     public void OpenTable()
     {
         craftingPanel.SetActive(true);
-        Inventory.Instance.RegisterExternalSlots(new List<Slot> { slot1, slot2 });
+        // Regisztráljuk a gép slotjait az inventory rendszerbe
+        Inventory.Instance.RegisterExternalSlots(containerSlots);
         Inventory.Instance.ToggleInventoryUI(true);
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
 
     public void CloseTable()
     {
-        ClearToInventory(slot1);
-        ClearToInventory(slot2);
         craftingPanel.SetActive(false);
-        //recipeBookPanel.SetActive(false);
-        //recipeBookOpen = false;
+        // Leiratkozunk a slotokról
+        Inventory.Instance.UnregisterExternalSlots(containerSlots);
         Inventory.Instance.ToggleInventoryUI(false);
-        Inventory.Instance.UnregisterExternalSlots(new List<Slot> { slot1, slot2 });
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }

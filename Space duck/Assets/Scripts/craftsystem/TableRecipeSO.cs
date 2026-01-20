@@ -1,20 +1,34 @@
 using UnityEngine;
+using System.Collections.Generic;
+
+[System.Serializable]
+public struct Ingredient
+{
+    public InventoryItemSO item;
+    public int amount;
+}
 
 [CreateAssetMenu(fileName = "New Recipe", menuName = "Crafting/Recipe")]
 public class TableRecipeSO : ScriptableObject
 {
-    public InventoryItemSO inputA;
-    public int amountA;
-    public InventoryItemSO inputB;
-    public int amountB;
-
+    public string itemName;
+    public List<Ingredient> ingredients; // Itt bármennyi alapanyagot megadhatsz
     public InventoryItemSO result;
-    public int resultAmount;
+    public int resultAmount = 1;
 
-    public bool Matches(InventoryItemSO item1, int qty1, InventoryItemSO item2, int qty2)
+    // Ellenõrzi, hogy a megadott slot-listában van-e elég mindenbõl
+    public bool CanCraft(List<Slot> availableSlots)
     {
-        bool order1 = (item1 == inputA && qty1 >= amountA && item2 == inputB && qty2 >= amountB);
-        bool order2 = (item1 == inputB && qty1 >= amountB && item2 == inputA && qty2 >= amountA);
-        return order1 || order2;
+        foreach (var ingredient in ingredients)
+        {
+            int foundAmount = 0;
+            foreach (var slot in availableSlots)
+            {
+                if (slot.HasItem() && slot.GetItem() == ingredient.item)
+                    foundAmount += slot.GetAmount();
+            }
+            if (foundAmount < ingredient.amount) return false;
+        }
+        return true;
     }
 }
