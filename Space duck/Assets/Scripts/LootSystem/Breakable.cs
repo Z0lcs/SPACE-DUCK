@@ -10,7 +10,7 @@ public class Breakable : MonoBehaviour
 
     [Header("Fizika")]
     public float breakForce = 500f;
-    public float breakRange = 5f;
+    public float breakRange = 10f;
     public LayerMask layerMask;
 
     private GameObject _itemToSpawn;
