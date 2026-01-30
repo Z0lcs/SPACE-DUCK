@@ -17,7 +17,7 @@ public partial class Inventory : MonoBehaviour
     public Image dragIcon;
 
     [Header("Settings")]
-    public float pickupRange = 10f;
+    public float pickupRange = 15f;
     public Material highlightMaterial;
     public LayerMask excludeLayers;
     public float equppedOpacity = 0.9f;
