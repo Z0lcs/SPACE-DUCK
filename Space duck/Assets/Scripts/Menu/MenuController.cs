@@ -14,8 +14,8 @@ public class MenuController : MonoBehaviour
     [Header("Játékos Irányítás")]
     public MonoBehaviour playerMovementScript;
 
-    private bool isDialogueEnabled = true;
-    private bool isKepregenyEnabled = true;
+    private bool isDialogueEnabled = false;
+    private bool isKepregenyEnabled = false;
     private bool isItemsEnabled = true;
     private bool isMenuOpen = true;
 
