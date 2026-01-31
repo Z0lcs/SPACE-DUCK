@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Unity.Cinemachine;
+using UnityEngine.InputSystem;
 
 public class PauseManager : MonoBehaviour
 {
@@ -7,6 +9,8 @@ public class PauseManager : MonoBehaviour
 
     public GameObject pauseMenuUI;
     public GameObject settingsPanel;
+
+    public CinemachineCamera freeLookCamera;
 
     void Update()
     {
@@ -30,6 +34,9 @@ public class PauseManager : MonoBehaviour
         Time.timeScale = 1f;
         isPaused = false;
 
+        if (freeLookCamera != null)
+            freeLookCamera.enabled = true;
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -40,8 +47,11 @@ public class PauseManager : MonoBehaviour
         Time.timeScale = 0f; 
         isPaused = true;
 
-        Cursor.lockState = CursorLockMode.None;
+        if (freeLookCamera != null)
+            freeLookCamera.enabled = false;
+
         Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     public void OpenSettings()
@@ -64,10 +74,9 @@ public class PauseManager : MonoBehaviour
 
     public void BackToMainMenu()
     {
-        Time.timeScale = 1f;
+        isPaused = false; // Alaphelyzetbe állítjuk a statikus változót
+        Time.timeScale = 1f; // Visszaadjuk az időt
 
-        SceneManager.LoadScene(0);
-
-        Debug.Log("Visszatérés a főmenübe...");
+        SceneManager.LoadScene(0); // Betöltjük a menüt
     }
 }

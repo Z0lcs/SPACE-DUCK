@@ -33,9 +33,27 @@ public class PlayerMove : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
+    void Awake()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        if (players.Length > 1)
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Update()
     {
+        if (PauseManager.isPaused)
+        {
+            if (Cursor.lockState != CursorLockMode.None)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            return;
+        }
+
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
 
         MyInput();
@@ -47,6 +65,8 @@ public class PlayerMove : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (PauseManager.isPaused) return;
+
         MovePlayer();
         HandleRotation();
     }
@@ -88,8 +108,24 @@ public class PlayerMove : MonoBehaviour
 
     private void UpdateOrientation()
     {
+        if (mainCam == null)
+        {
+            if (Camera.main != null)
+            {
+                mainCam = Camera.main.transform;
+            }
+            else
+            {
+                return; 
+            }
+        }
+
         Vector3 viewDir = transform.position - new Vector3(mainCam.position.x, transform.position.y, mainCam.position.z);
-        orientation.forward = viewDir.normalized;
+
+        if (viewDir.sqrMagnitude > 0.01f)
+        {
+            orientation.forward = viewDir.normalized;
+        }
     }
 
     private void SpeedControl()
