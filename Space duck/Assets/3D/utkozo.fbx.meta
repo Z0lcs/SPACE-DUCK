@@ -8,12 +8,12 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Degradable Metal.001
-    second: {fileID: 2100000, guid: 62e628fc6ff336c49b185e71fb4f8506, type: 2}
+    second: {fileID: 2100000, guid: cdafaf306dc0d5c498951fedf5d7ad47, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Material.006
-    second: {fileID: 2100000, guid: f908eef9e6d049e4c8343de471c78031, type: 2}
+    second: {fileID: 2100000, guid: 570713e24d0b26b4abf09dc2394fc73d, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
