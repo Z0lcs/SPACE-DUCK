@@ -53,6 +53,11 @@ public partial class Inventory : MonoBehaviour
 
     private void Start()
     {
+        for (int i = 0; i < hotbarSlots.Count; i++)
+        {
+            var text = hotbarSlots[i].transform.Find("SelectionNumber")?.GetComponent<TMPro.TextMeshProUGUI>();
+            if (text != null) text.text = (i + 1).ToString();
+        }
         UpdateHotbarOpacity();
         EquipHandItem();
     }
