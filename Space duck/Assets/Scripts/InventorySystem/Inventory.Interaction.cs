@@ -3,6 +3,11 @@ using UnityEngine.InputSystem;
 
 public partial class Inventory
 {
+    // A változóid maradnak, de az originalMaterial-nak tömbnek kell lennie, 
+    // különben fizikailag képtelen elmenteni a villáskulcs mindkét részét.
+    
+    private Material[] originalMaterials;
+
     private void HandleInteractionInput(bool isUIOpen)
     {
         if (Keyboard.current.eKey.wasPressedThisFrame)
@@ -52,24 +57,40 @@ public partial class Inventory
 
     private void ApplyHighlight(Renderer rend)
     {
-        if (rend == null) return;
+        if (rend == null || lookedAtRenderer == rend) return;
+
         lookedAtRenderer = rend;
-        originalMaterial = rend.material;
-        rend.material = highlightMaterial;
+        // sharedMaterials-t mentünk, hogy az összes réteg meglegyen
+        originalMaterials = rend.sharedMaterials;
+
+        // Létrehozunk egy tömböt, ami minden slotot kitölt a highlight-tal
+        Material[] tempMats = new Material[originalMaterials.Length];
+        for (int i = 0; i < tempMats.Length; i++)
+        {
+            tempMats[i] = highlightMaterial;
+        }
+
+        // Ez színezi át az EGÉSZET
+        rend.materials = tempMats;
     }
 
     private void ResetHighlight()
     {
-        if (lookedAtRenderer != null)
+        // A NullReferenceException azért van, mert olyankor is akarsz resetelni, 
+        // amikor nem is nézel semmire. Ez az IF megállítja a hibát:
+        if (lookedAtRenderer != null && originalMaterials != null)
         {
-            lookedAtRenderer.material = originalMaterial;
+            lookedAtRenderer.materials = originalMaterials;
             lookedAtRenderer = null;
+            originalMaterials = null;
         }
         currentlyLookedAtItem = null;
         currentlyLookedAtChest = null;
     }
 
-    private void PickupItem()
+   
+    
+private void PickupItem()
     {
         if (currentlyLookedAtItem != null)
         {
@@ -81,3 +102,4 @@ public partial class Inventory
         }
     }
 }
+
