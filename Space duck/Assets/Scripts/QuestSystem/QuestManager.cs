@@ -76,22 +76,25 @@ public class QuestManager : MonoBehaviour
         }
         else if (objective.targetItem != null)
         {
-            int currentCount = 0;
+            int currentInInventory = 0;
 
             if (objective.mustBeInChest)
             {
                 Chest openChest = GameObject.FindAnyObjectByType<Chest>();
                 if (openChest != null)
                 {
-                    currentCount = openChest.GetItemQuantityInChest(objective.targetItem);
+                    currentInInventory = openChest.GetItemQuantityInChest(objective.targetItem);
                 }
             }
             else
             {
-                currentCount = Inventory.Instance.GetItemQuantity(objective.targetItem);
+                currentInInventory = Inventory.Instance.GetItemQuantity(objective.targetItem);
             }
 
-            progressDict[objective] = Mathf.Min(currentCount, objective.requiredAmount);
+            if (currentInInventory > progressDict[objective])
+            {
+                progressDict[objective] = Mathf.Min(currentInInventory, objective.requiredAmount);
+            }
         }
 
         if (progressDict[objective] != oldProgress)
