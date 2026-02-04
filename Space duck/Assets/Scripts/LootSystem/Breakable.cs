@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using UnityEngine.Audio;
 
 public class Breakable : MonoBehaviour
 {
     [Header("Grafika és Effektek")]
     public GameObject debrisPrefab;
     public AudioClip breakSound;
+    public AudioMixerGroup outputGroup;
 
     [Header("Fizika")]
     public float breakForce = 500f;
@@ -66,7 +68,22 @@ public class Breakable : MonoBehaviour
         }
 
         if (breakSound != null)
-            AudioSource.PlayClipAtPoint(breakSound, transform.position);
+        {
+            GameObject tempGO = new GameObject("BreakSoundTemp");
+            tempGO.transform.position = transform.position;
+            AudioSource aSource = tempGO.AddComponent<AudioSource>();
+
+            aSource.clip = breakSound;
+
+            if (outputGroup != null)
+            {
+                aSource.outputAudioMixerGroup = outputGroup;
+            }
+
+            aSource.Play();
+
+            Destroy(tempGO, breakSound.length);
+        }
 
         if (debrisPrefab != null)
         {

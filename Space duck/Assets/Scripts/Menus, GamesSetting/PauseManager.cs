@@ -68,8 +68,10 @@ public class PauseManager : MonoBehaviour
 
     public void LoadMenu()
     {
-        Time.timeScale = 1f; 
-        SceneManager.LoadScene(0); 
+        Time.timeScale = 1f;
+        isPaused = false;
+
+        SceneManager.LoadScene(0);
     }
 
     public void BackToMainMenu()

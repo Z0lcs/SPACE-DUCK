@@ -21,6 +21,10 @@ public class GameInitializer : MonoBehaviour
         {
             FindObjectOfType<VideoUiController>().PlayIntro();
         }
+
+        var cam = FindObjectOfType<Unity.Cinemachine.CinemachineCamera>();
+        if (cam != null) cam.enabled = true;
+
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
