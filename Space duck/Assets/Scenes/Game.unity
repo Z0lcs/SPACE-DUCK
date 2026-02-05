@@ -50360,7 +50360,7 @@ MonoBehaviour:
   hudCanvas: {fileID: 0}
   dragIcon: {fileID: 203379617}
   pickupRange: 10
-  highlightMaterial: {fileID: 0}
+  highlightMaterial: {fileID: 2100000, guid: 33b1098769975a6428dbe5243d7f4555, type: 2}
   excludeLayers:
     serializedVersion: 2
     m_Bits: 8
