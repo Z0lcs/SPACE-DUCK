@@ -4129,6 +4129,7 @@ MonoBehaviour:
   mainCanvas: {fileID: 197003805}
   introClip: {fileID: 32900000, guid: e7dbb6bc600c6e8479bbc3a52485a890, type: 3}
   questClip: {fileID: 32900000, guid: 25a6cee047fe0994bb6f670e7115b3b6, type: 3}
+  isQuestCompleted: 0
 --- !u!1 &197365516
 GameObject:
   m_ObjectHideFlags: 0
@@ -4621,6 +4622,142 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4477043850196476296, guid: e78cd4238c5b2cf4fa7431ce3f528db9, type: 3}
   m_PrefabInstance: {fileID: 2102071251}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &220265440
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 220265441}
+  - component: {fileID: 220265443}
+  - component: {fileID: 220265442}
+  m_Layer: 0
+  m_Name: "Kil\xF6v\xE9s"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &220265441
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 220265440}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -12.534122}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 826838993}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 6, y: -138}
+  m_SizeDelta: {x: 650, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &220265442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 220265440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: "[E] Kil\xF6v\xE9s ind\xEDt\xE1sa"
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 60
+  m_fontSizeBase: 60
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 1
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 256
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: -26.682007, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &220265443
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 220265440}
+  m_CullTransparentMesh: 1
 --- !u!4 &222872479 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7560397137232946789, guid: 2c509bd87adb33748b5da1d40126ec8b, type: 3}
@@ -9316,12 +9453,12 @@ GameObject:
   - component: {fileID: 443657813}
   - component: {fileID: 443657812}
   m_Layer: 0
-  m_Name: Door
+  m_Name: "Lapoz\xE1s"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &443657811
 RectTransform:
   m_ObjectHideFlags: 0
@@ -18878,7 +19015,8 @@ MonoBehaviour:
   interactableLayer:
     serializedVersion: 2
     m_Bits: 64
-  interactUI: {fileID: 826838992}
+  interactUI: {fileID: 443657810}
+  interactUI2: {fileID: 220265440}
 --- !u!1001 &813241122
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19238,7 +19376,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &826838993
 RectTransform:
   m_ObjectHideFlags: 0
@@ -19252,6 +19390,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 443657811}
+  - {fileID: 220265441}
   m_Father: {fileID: 197003806}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -27799,7 +27938,7 @@ GameObject:
   - component: {fileID: 1125892065}
   - component: {fileID: 1125892064}
   m_Layer: 6
-  m_Name: Cube
+  m_Name: "Napt\xE1r"
   m_TagString: Calendar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30831,9 +30970,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1263866057}
-  m_Layer: 0
+  - component: {fileID: 1263866058}
+  m_Layer: 6
   m_Name: Pult
-  m_TagString: Untagged
+  m_TagString: VideoPlayer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30864,6 +31004,27 @@ Transform:
   - {fileID: 4244415993129225868}
   m_Father: {fileID: 9153867358017297660}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1263866058
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1263866056}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 7, y: 6, z: 4}
+  m_Center: {x: 0, y: 4, z: -1}
 --- !u!224 &1266466010 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4477043850196476296, guid: e78cd4238c5b2cf4fa7431ce3f528db9, type: 3}
@@ -45960,7 +46121,7 @@ AudioSource:
   m_GameObject: {fileID: 1894647110}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 2ca064df64b95c54ab2fb13ad9c262f2, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -52183,7 +52344,7 @@ GameObject:
   - component: {fileID: 8832251087672735043}
   - component: {fileID: 4644317206243610499}
   - component: {fileID: 2509338066212006806}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: "Kijelz\u0151.003"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52254,7 +52415,7 @@ GameObject:
   - component: {fileID: 8866761922712463032}
   - component: {fileID: 659627849097794720}
   - component: {fileID: 2908516221136250803}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Buttons.002|buttonKeret2|Dupli|1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53009,7 +53170,7 @@ GameObject:
   - component: {fileID: 3902228609209121315}
   - component: {fileID: 3453300126277604488}
   - component: {fileID: 8237560361398142091}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Buttons.001|buttonKeret1|Dupli|2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53027,7 +53188,7 @@ GameObject:
   - component: {fileID: 4051845239976371378}
   - component: {fileID: 4834527834255073134}
   - component: {fileID: 1242314089436360035}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Buttons.002|buttonKeret1|Dupli|2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53341,7 +53502,7 @@ GameObject:
   - component: {fileID: 3057852857151433361}
   - component: {fileID: 3106077919225748148}
   - component: {fileID: 233771245565488433}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: KAr|Sphere|Dupli|2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53374,7 +53535,7 @@ GameObject:
   - component: {fileID: 7354380899823917017}
   - component: {fileID: 2005272235872936819}
   - component: {fileID: 8441503648375185073}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Buttons|button1|Dupli|3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53703,7 +53864,7 @@ GameObject:
   - component: {fileID: 4695133319916318073}
   - component: {fileID: 739630061801892445}
   - component: {fileID: 2886500411369874518}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Buttons.002|buttonPlace2|Dupli|
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54231,7 +54392,7 @@ GameObject:
   - component: {fileID: 3995364600373571563}
   - component: {fileID: 1358102436460901484}
   - component: {fileID: 298852600693597806}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: "Kijelz\u0151"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54249,7 +54410,7 @@ GameObject:
   - component: {fileID: 3987244127245756297}
   - component: {fileID: 2690212298585837120}
   - component: {fileID: 4849662244458030711}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Buttons|button2|Dupli|4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54310,7 +54471,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2549313191701647540}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: KAr.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54550,7 +54711,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4248050466466833243}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Buttons
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54568,7 +54729,7 @@ GameObject:
   - component: {fileID: 5658172148659811716}
   - component: {fileID: 7784631719059505679}
   - component: {fileID: 2564333119383606948}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: "Kijelz\u0151 keret"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54586,7 +54747,7 @@ GameObject:
   - component: {fileID: 6268152155881942626}
   - component: {fileID: 5871371632668997676}
   - component: {fileID: 5552574456936660501}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Pult
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54662,7 +54823,7 @@ GameObject:
   - component: {fileID: 3859293741353413585}
   - component: {fileID: 6959486072225160533}
   - component: {fileID: 2902839718372966007}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Buttons|buttonKeret1|Dupli|2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -54967,7 +55128,7 @@ GameObject:
   - component: {fileID: 4443468070452580771}
   - component: {fileID: 6376275452136902593}
   - component: {fileID: 4166354711311213376}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: KAr|Cylinder.001|Dupli|1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55054,7 +55215,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4244415993129225868}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Buttons.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55209,7 +55370,7 @@ GameObject:
   - component: {fileID: 47243844920158623}
   - component: {fileID: 7762473496908140699}
   - component: {fileID: 1846002327309050589}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: KAr.001|Sphere|Dupli|2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55311,7 +55472,7 @@ GameObject:
   - component: {fileID: 4134088626702142962}
   - component: {fileID: 6291917257406712495}
   - component: {fileID: 6127141592906262574}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Buttons.001|buttonPlace2|Dupli|
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55671,7 +55832,7 @@ GameObject:
   - component: {fileID: 3410904904875004236}
   - component: {fileID: 2889274122903252181}
   - component: {fileID: 5861731944350909558}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Buttons.002|button2|Dupli|4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56449,7 +56610,7 @@ GameObject:
   - component: {fileID: 8797186794934742518}
   - component: {fileID: 5886745060778785692}
   - component: {fileID: 5752220991671480941}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Buttons.001|button1|Dupli|3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56526,7 +56687,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2224947253431476068}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Buttons.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56728,7 +56889,7 @@ GameObject:
   - component: {fileID: 4514661777101829407}
   - component: {fileID: 231636764186851612}
   - component: {fileID: 8121156970187097217}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: "Kijelz\u0151.001"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -57304,7 +57465,7 @@ GameObject:
   - component: {fileID: 4488246376529273447}
   - component: {fileID: 5051458906950049710}
   - component: {fileID: 4751165396894823726}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: KAr|Circle|Dupli|
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -58339,7 +58500,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1754390036824748216}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: KAr
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -58721,7 +58882,7 @@ GameObject:
   - component: {fileID: 1693995984222956108}
   - component: {fileID: 3926834909054324583}
   - component: {fileID: 4451351573435480772}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: KAr.001|Cylinder.001|Dupli|1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -58816,7 +58977,7 @@ GameObject:
   - component: {fileID: 6485079142411567563}
   - component: {fileID: 2098672181926420170}
   - component: {fileID: 5135297172274690982}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Buttons.001|button2|Dupli|4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -58889,7 +59050,7 @@ GameObject:
   - component: {fileID: 3596343439248039068}
   - component: {fileID: 3108826272129598555}
   - component: {fileID: 6026790282709589137}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: "Kijelz\u0151.002"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59019,7 +59180,7 @@ GameObject:
   - component: {fileID: 3351302484668429850}
   - component: {fileID: 7405489030659416697}
   - component: {fileID: 5118008747188895542}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Buttons.002|button1|Dupli|3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59697,7 +59858,7 @@ GameObject:
   - component: {fileID: 9047927933359105411}
   - component: {fileID: 6839998494073487349}
   - component: {fileID: 4444253316161074638}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Buttons|buttonPlace2|Dupli|
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59783,7 +59944,7 @@ GameObject:
   - component: {fileID: 2702589840945769781}
   - component: {fileID: 9022162575862308329}
   - component: {fileID: 8120103759147573602}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Buttons.001|buttonKeret2|Dupli|1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59816,7 +59977,7 @@ GameObject:
   - component: {fileID: 3454959878441847225}
   - component: {fileID: 4271240003262405876}
   - component: {fileID: 2919259261297949466}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Buttons|buttonKeret2|Dupli|1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59933,7 +60094,7 @@ GameObject:
   - component: {fileID: 5571899338545876299}
   - component: {fileID: 1853248075171192152}
   - component: {fileID: 4090725321320660004}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: KAr.001|Circle|Dupli|
   m_TagString: Untagged
   m_Icon: {fileID: 0}

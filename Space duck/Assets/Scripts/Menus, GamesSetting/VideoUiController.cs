@@ -11,9 +11,7 @@ public class VideoUiController : MonoBehaviour
     public VideoClip introClip;
     public VideoClip questClip;
 
-    void Start()
-    {
-    }
+    public bool isQuestCompleted = false;
 
     void OnEnable()
     {
@@ -27,25 +25,25 @@ public class VideoUiController : MonoBehaviour
         videoPlayer.loopPointReached -= ShowUI;
     }
 
-    public void PlayIntro()
+    public void PlayQuestVideo()
     {
-        if (introClip != null)
+        if (isQuestCompleted && questClip != null)
         {
-            PlayVideo(introClip);
+            PlayVideo(questClip);
         }
     }
 
     public void StartQuestVideoSequence(float delay = 15f)
     {
-        StartCoroutine(DelayedQuestVideo(delay));
+        isQuestCompleted = true;
+        Debug.Log("Quest kész! Most már megnyomhatod az E-t a videóhoz.");
     }
 
-    private IEnumerator DelayedQuestVideo(float delay)
+    public void PlayIntro()
     {
-        yield return new WaitForSeconds(delay);
-        if (questClip != null)
+        if (introClip != null)
         {
-            PlayVideo(questClip);
+            PlayVideo(introClip);
         }
     }
 
@@ -56,12 +54,12 @@ public class VideoUiController : MonoBehaviour
         videoPlayer.Play();
     }
 
-    void HideUI(VideoPlayer source)
+    void HideUI(VideoPlayer vp)
     {
         if (mainCanvas != null) mainCanvas.SetActive(false);
     }
 
-    void ShowUI(VideoPlayer source)
+    void ShowUI(VideoPlayer vp)
     {
         if (mainCanvas != null) mainCanvas.SetActive(true);
         videoPlayer.gameObject.SetActive(false);
