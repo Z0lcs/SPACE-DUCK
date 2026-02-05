@@ -8,26 +8,20 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioMixer mainMixer;
     public Slider masterSlider, bgSlider, questSlider, expSlider;
 
-    private bool isInitialized = false;
 
-    void Awake()
+    void Start()
     {
-        // Először beállítjuk a csúszkák vizuális értékét
-        masterSlider.value = 0.7f;
-        bgSlider.value = 0.7f;
-        questSlider.value = 0.7f;
-        expSlider.value = 0.7f;
+        masterSlider.value = 70f;
+        bgSlider.value = 70f;
+        questSlider.value = 70f;
+        expSlider.value = 70f;
 
-        // Kényszerítjük a Mixert a 70%-ra (-10dB korláttal)
-        ApplyVolume("Master", 0.7f);
-        ApplyVolume("BG", 0.7f);
-        ApplyVolume("Quest", 0.7f);
-        ApplyVolume("Explosion", 0.7f);
-
-        isInitialized = true;
+        ApplyVolume("Master", 70f);
+        ApplyVolume("BG", 70f);
+        ApplyVolume("Quest", 70f);
+        ApplyVolume("Explosion", 70f);
     }
 
-    // Ezeket hívják a Sliderek (On Value Changed)
     public void SetMasterVolume(float val) => ApplyVolume("Master", val);
     public void SetBGVolume(float val) => ApplyVolume("BG", val);
     public void SetExplosionVolume(float val) => ApplyVolume("Explosion", val);
@@ -35,18 +29,24 @@ public class SoundManager : MonoBehaviour
 
     private void ApplyVolume(string parameterName, float value)
     {
-        // Ha még nem inicializáltunk, ne engedjük a Slidereknek elrontani
-        if (!isInitialized && Time.timeSinceLevelLoad < 0.1f) return;
 
-        if (value <= 0.0001f)
+        if (value <= 0.01f)
         {
             mainMixer.SetFloat(parameterName, -80f);
         }
         else
         {
-            // A te bevált -10dB-es eltolásod
-            float dB = (Mathf.Log10(value) * 20) - 10f;
-            mainMixer.SetFloat(parameterName, dB);
+            float normalizedValue = value / 100f;
+            float dB = Mathf.Log10(normalizedValue) * 20;
+
+            if (parameterName == "Master")
+            {
+                mainMixer.SetFloat(parameterName, dB);
+            }
+            else
+            {
+                mainMixer.SetFloat(parameterName, dB - 10f);
+            }
         }
     }
 }
