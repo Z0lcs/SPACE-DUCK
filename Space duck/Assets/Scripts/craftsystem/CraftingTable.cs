@@ -8,69 +8,69 @@ public class CraftingTable : MonoBehaviour
     public KeyCode openKey = KeyCode.E;
     private Transform player;
 
-    [Header("UI & Slots")]
+    [Header("UI Beállítások")]
     public GameObject craftingPanel;
-    public List<Slot> containerSlots; // A gép belsõ slotjai (amiket a jobb oldalra tettél)
-    public List<TableRecipeSO> recipes; // A receptek listája (SO assetek)
+    public List<TableRecipeSO> recipes;
 
     [Header("UI Automatikus Generálás")]
-    public GameObject recipeButtonPrefab; // Az "Engram" gomb prefabja
-    public Transform recipeContainer;     // A Scroll View 'Content' objektuma
+    public GameObject recipeButtonPrefab;
+    public Transform recipeContainer;
 
     void Start()
     {
-        // Játékos keresése a távolság ellenõrzéséhez
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null) player = playerObj.transform;
-
-        // Receptek legenerálása a UI-ra az indításkor
         GenerateRecipes();
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape)) CloseTable();
-
         if (player == null || !Input.GetKeyDown(openKey)) return;
 
-        float distance = Vector3.Distance(transform.position, player.position);
-        if (distance <= interactionRange)
+        if (Vector3.Distance(transform.position, player.position) <= interactionRange)
         {
             if (!craftingPanel.activeSelf) OpenTable();
             else CloseTable();
         }
     }
 
-    // --- CRAFTING LOGIKA ---
-
     public void Craft(TableRecipeSO recipe)
     {
         if (recipe == null) return;
 
-        // Ellenõrizzük, hogy a gép belsõ slotjaiban (containerSlots) van-e elég anyag
-        if (recipe.CanCraft(containerSlots))
+        // Az Inventory allSlots listáját használjuk az ellenõrzéshez
+        // Így minden benne van: táska + hotbar
+        if (recipe.CanCraft(Inventory.Instance.allSlots))
         {
-            // 1. Alapanyagok levonása
+            // 1. Levonjuk az alapanyagokat
             foreach (var ingredient in recipe.ingredients)
             {
-                ConsumeItems(ingredient.item, ingredient.amount);
+                ConsumeFromInventory(ingredient.item, ingredient.amount);
             }
 
-            // 2. Eredmény hozzáadása a gép inventory-jába
-            AddItemToContainer(recipe.result, recipe.resultAmount);
+            // 2. Hozzáadjuk a kész tárgyat a te AddItem metódusoddal
+            // Ez automatikusan stackeli az itemet és kezeli a táska telítettségét
+            Inventory.Instance.AddItem(recipe.result, recipe.resultAmount);
 
-            Debug.Log($"{recipe.itemName} sikeresen legyártva!");
+            // 3. Frissítjük a küldetéseket (mivel változott a készletünk)
+            // Az Inventory-dban ez a metódus végzi a Quest frissítést
+            Inventory.Instance.NotifyQuestManagerOfInventoryChange();
+
+            Debug.Log($"{recipe.itemName} elkészítve!");
         }
         else
         {
-            Debug.Log("Nincs elég alapanyag a gépben!");
+            Debug.Log("Nincs elég alapanyag a táskádban!");
         }
     }
 
-    private void ConsumeItems(InventoryItemSO item, int amount)
+    private void ConsumeFromInventory(InventoryItemSO item, int amount)
     {
         int remainingToConsume = amount;
-        foreach (var slot in containerSlots)
+
+        // Végigmegyünk az összes sloton (allSlots), amit az Inventory kezel
+        foreach (Slot slot in Inventory.Instance.allSlots)
         {
             if (slot.HasItem() && slot.GetItem() == item)
             {
@@ -87,59 +87,13 @@ public class CraftingTable : MonoBehaviour
         }
     }
 
-    private void AddItemToContainer(InventoryItemSO item, int amount)
-    {
-        // Megpróbáljuk meglévõ stackhez adni a gépen belül
-        foreach (var slot in containerSlots)
-        {
-            if (slot.HasItem() && slot.GetItem() == item)
-            {
-                slot.SetItem(item, slot.GetAmount() + amount);
-                return;
-            }
-        }
-
-        // Ha nincs stack, keresünk egy üres helyet a gépben
-        foreach (var slot in containerSlots)
-        {
-            if (!slot.HasItem())
-            {
-                slot.SetItem(item, amount);
-                return;
-            }
-        }
-    }
-
-    // --- UI ÉS GENERÁLÁS ---
-
-    public void GenerateRecipes()
-    {
-        // Töröljük a meglévõ gombokat
-        foreach (Transform child in recipeContainer)
-        {
-            Destroy(child.gameObject);
-        }
-
-        // Új gombok létrehozása minden recepthez
-        foreach (TableRecipeSO recipe in recipes)
-        {
-            GameObject newBtn = Instantiate(recipeButtonPrefab, recipeContainer);
-            RecipeButtonUI buttonScript = newBtn.GetComponent<RecipeButtonUI>();
-
-            if (buttonScript != null)
-            {
-                buttonScript.Setup(recipe, this);
-            }
-        }
-    }
+    // --- UI ÉS NYITÁS ---
 
     public void OpenTable()
     {
         craftingPanel.SetActive(true);
-        // Regisztráljuk a gép slotjait az inventory rendszerbe
-        Inventory.Instance.RegisterExternalSlots(containerSlots);
+        // Itt nem regisztrálunk külsõ slotokat, mert nincs saját tárolója a gépnek
         Inventory.Instance.ToggleInventoryUI(true);
-
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
@@ -147,11 +101,19 @@ public class CraftingTable : MonoBehaviour
     public void CloseTable()
     {
         craftingPanel.SetActive(false);
-        // Leiratkozunk a slotokról
-        Inventory.Instance.UnregisterExternalSlots(containerSlots);
         Inventory.Instance.ToggleInventoryUI(false);
-
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+    public void GenerateRecipes()
+    {
+        foreach (Transform child in recipeContainer) Destroy(child.gameObject);
+        foreach (TableRecipeSO recipe in recipes)
+        {
+            GameObject newBtn = Instantiate(recipeButtonPrefab, recipeContainer);
+            RecipeButtonUI buttonScript = newBtn.GetComponent<RecipeButtonUI>();
+            if (buttonScript != null) buttonScript.Setup(recipe, this);
+        }
     }
 }

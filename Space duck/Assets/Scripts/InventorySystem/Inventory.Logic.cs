@@ -87,7 +87,7 @@ public partial class Inventory
         }
     }
 
-    private void NotifyQuestManagerOfInventoryChange()
+    public void NotifyQuestManagerOfInventoryChange()
     {
         if (QuestManager.Instance == null || QuestInputTracker.Instance == null) return;
 
