@@ -1,87 +1,105 @@
 using UnityEngine;
+using UnityEngine.InputSystem; // Az új Input System miatt
 using UnityEngine.UI;
 
 public class Mining : MonoBehaviour
 {
     [Header("Beállítások")]
-    public float interactionDistance = 3f;
-    public Transform playerCamera;
-    public Slider powerSlider;
+    public float miningRange = 4f;       // A te pickupRange-ednek felel meg
+    public LayerMask excludeLayers;      // Rétegek, amiket ne találjon el
+    public Slider powerSlider;           // A UI csúszka
     public float sliderSpeed = 2.5f;
 
-    [Header("Animáció")]
-    public Animator anim;
-
     private bool isSettingPower = false;
-    private Ore currentOre;
+    private Ore currentlyLookedAtOre;    // Mint a currentlyLookedAtItem
     private bool hitBonusPoint = false;
 
     void Start()
     {
-        powerSlider.gameObject.SetActive(false);
+        if (powerSlider != null) powerSlider.gameObject.SetActive(false);
     }
 
     void Update()
     {
         if (isSettingPower)
         {
-            // Csúszka mozgatása
-            powerSlider.value = Mathf.PingPong(Time.time * sliderSpeed, 1f);
-
-            if (Input.GetMouseButtonDown(0))
-            {
-                FinalizeHit();
-            }
+            HandlePowerSlider();
         }
         else
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                CheckForOre();
-            }
-        }
-    }
+            // Folyamatosan nézzük, van-e elõttünk érc (mint a PerformInteractionDetection)
+            PerformOreDetection();
 
-    void CheckForOre()
-    {
-        Ray ray = new Ray(playerCamera.position, playerCamera.forward);
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, interactionDistance + 5f))
-        {
-            float dist = Vector3.Distance(transform.position, hit.point);
-            if (dist <= interactionDistance)
+            // Kattintásra indul a bányászat (mint a HandleInteractionInput)
+            if (Mouse.current.leftButton.wasPressedThisFrame)
             {
-                currentOre = hit.transform.GetComponentInParent<Ore>();
-                if (currentOre != null)
+                if (currentlyLookedAtOre != null)
                 {
-                    hitBonusPoint = hit.transform.CompareTag("HitMarker");
-
-                    // Fordulás az érchez
-                    Vector3 lookTarget = hit.point;
-                    lookTarget.y = transform.position.y;
-                    transform.LookAt(lookTarget);
-
-                    // Animáció indítása
-                    if (anim != null) anim.SetTrigger("Mine");
-
-                    isSettingPower = true;
-                    powerSlider.gameObject.SetActive(true);
+                    StartMiningPowerSequence();
                 }
             }
         }
     }
 
-    void FinalizeHit()
+    private void PerformOreDetection()
+    {
+        currentlyLookedAtOre = null;
+        hitBonusPoint = false;
+
+        // PONTOSAN A TE RAYCAST LOGIKÁD:
+        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, miningRange, ~excludeLayers))
+        {
+            // Megnézzük, hogy érc-e vagy a rajta lévõ bónusz pont (HitMarker)
+            Ore ore = hit.collider.GetComponentInParent<Ore>();
+
+            if (ore != null)
+            {
+                currentlyLookedAtOre = ore;
+
+                // Ha a HitMarker taget találtuk el, az bónusz
+                if (hit.collider.CompareTag("HitMarker"))
+                {
+                    hitBonusPoint = true;
+                }
+            }
+        }
+    }
+
+    private void StartMiningPowerSequence()
+    {
+        // Karakter odafordítása az érchez (TPP-nél fontos)
+        Vector3 lookTarget = currentlyLookedAtOre.transform.position;
+        lookTarget.y = transform.position.y;
+        transform.LookAt(lookTarget);
+
+        isSettingPower = true;
+        powerSlider.gameObject.SetActive(true);
+    }
+
+    private void HandlePowerSlider()
+    {
+        powerSlider.value = Mathf.PingPong(Time.time * sliderSpeed, 1f);
+
+        if (Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            FinalizeMiningHit();
+        }
+    }
+
+    private void FinalizeMiningHit()
     {
         float power = powerSlider.value;
-        // Ha a csúszka végén áll meg (Sweet spot)
-        if (power > 0.9f) power *= 2f;
+        if (power > 0.9f) power *= 2f; // Tökéletes idõzítés bónusz
 
-        currentOre.GetHit(power, hitBonusPoint);
+        if (currentlyLookedAtOre != null)
+        {
+            currentlyLookedAtOre.GetHit(power, hitBonusPoint);
+        }
 
+        // Alaphelyzetbe állítás
         isSettingPower = false;
         powerSlider.gameObject.SetActive(false);
-        currentOre = null;
     }
 }

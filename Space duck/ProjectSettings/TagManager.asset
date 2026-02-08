@@ -8,6 +8,7 @@ TagManager:
   - FreeLookCam
   - Calendar
   - VideoPlayer
+  - HitMarker
   layers:
   - Default
   - TransparentFX

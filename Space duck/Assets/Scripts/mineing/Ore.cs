@@ -36,12 +36,22 @@ public class Ore : MonoBehaviour
 
     void SpawnMarker()
     {
-        // Egy véletlenszerû pont az érc felületén
+        // Kicsit távolabb rakjuk a szikla közepétõl, hogy ne lógjon bele (0.5 helyett 0.8f)
         Vector3 randomOffset = Random.onUnitSphere * 0.5f;
         currentMarker = Instantiate(hitMarkerPrefab, transform.position + randomOffset, Quaternion.identity);
         currentMarker.transform.parent = transform;
+        currentMarker.tag = "HitMarker";
 
-        // Szín beállítása az adatlapról
-        currentMarker.GetComponent<Renderer>().material.color = data.markerColor;
+        // Szín és fény beállítása
+        Renderer rend = currentMarker.GetComponent<Renderer>();
+        if (rend != null)
+        {
+            // Alapszín beállítása
+            rend.material.color = data.markerColor;
+
+            // Emission (világítás) bekapcsolása kódból, hogy rikítson
+            rend.material.EnableKeyword("_EMISSION");
+            rend.material.SetColor("_EmissionColor", data.markerColor * 2f); // 2x-es erõsség
+        }
     }
 }
