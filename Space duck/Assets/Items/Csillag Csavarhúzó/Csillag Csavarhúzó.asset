@@ -18,6 +18,6 @@ MonoBehaviour:
   maxStackSize: 1
   itemPrefab: {fileID: 5855496681190187217, guid: 3a7b000fd1261a2499792390b7785cfc, type: 3}
   handItemPrefab: {fileID: 5855496681190187217, guid: 7ad1f976097df974b8c83721e1053d87, type: 3}
-  handPositionOffset: {x: 0, y: 0.08, z: -0.05}
-  handRotationOffset: {x: 0, y: 90, z: 0}
+  handPositionOffset: {x: 0.8, y: 0.1, z: 0.9}
+  handRotationOffset: {x: 0, y: 0, z: 90}
   itemType: 0

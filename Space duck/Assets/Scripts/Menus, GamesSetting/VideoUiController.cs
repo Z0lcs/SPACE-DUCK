@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.Video;
-using System.Collections;
 
 public class VideoUiController : MonoBehaviour
 {
@@ -11,20 +10,42 @@ public class VideoUiController : MonoBehaviour
     public VideoClip introClip;
     public VideoClip questClip;
 
-    void Start()
+    public bool isQuestCompleted = false;
+
+    void Awake()
     {
+        if (videoPlayer != null)
+        {
+            videoPlayer.started += HideUI;
+            videoPlayer.loopPointReached += ShowUI;
+        }
     }
 
-    void OnEnable()
+    void OnDestroy()
     {
-        videoPlayer.started += HideUI;
-        videoPlayer.loopPointReached += ShowUI;
+        if (videoPlayer != null)
+        {
+            videoPlayer.started -= HideUI;
+            videoPlayer.loopPointReached -= ShowUI;
+        }
     }
 
-    void OnDisable()
+    public void PlayQuestVideo()
     {
-        videoPlayer.started -= HideUI;
-        videoPlayer.loopPointReached -= ShowUI;
+        if (isQuestCompleted && questClip != null)
+        {
+            PlayVideo(questClip);
+        }
+        else
+        {
+            Debug.LogWarning("A küldetés nincs kész, vagy hiányzik a videó!");
+        }
+    }
+
+    public void StartQuestVideoSequence(float delay = 15f)
+    {
+        isQuestCompleted = true;
+        Debug.Log("Quest kész! Most már megnyomhatod az E-t a videóhoz.");
     }
 
     public void PlayIntro()
@@ -35,35 +56,30 @@ public class VideoUiController : MonoBehaviour
         }
     }
 
-    public void StartQuestVideoSequence(float delay = 15f)
-    {
-        StartCoroutine(DelayedQuestVideo(delay));
-    }
-
-    private IEnumerator DelayedQuestVideo(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        if (questClip != null)
-        {
-            PlayVideo(questClip);
-        }
-    }
-
     private void PlayVideo(VideoClip clip)
     {
-        videoPlayer.clip = clip;
+        if (videoPlayer == null) return;
+
         videoPlayer.gameObject.SetActive(true);
+        videoPlayer.clip = clip;
         videoPlayer.Play();
     }
 
-    void HideUI(VideoPlayer source)
+    void HideUI(VideoPlayer vp)
     {
         if (mainCanvas != null) mainCanvas.SetActive(false);
+        Debug.Log("UI elrejtve, videó indul.");
     }
 
-    void ShowUI(VideoPlayer source)
+    void ShowUI(VideoPlayer vp)
     {
+        Debug.Log("Videó véget ért, UI visszakapcsolása.");
         if (mainCanvas != null) mainCanvas.SetActive(true);
+
+        vp.Stop();
         videoPlayer.gameObject.SetActive(false);
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 }

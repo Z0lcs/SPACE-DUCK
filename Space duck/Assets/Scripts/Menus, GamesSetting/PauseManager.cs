@@ -73,12 +73,9 @@ public class PauseManager : MonoBehaviour
 
         SceneManager.LoadScene(0);
     }
-
-    public void BackToMainMenu()
+    public void QuitGame()
     {
-        isPaused = false; // Alaphelyzetbe állítjuk a statikus változót
-        Time.timeScale = 1f; // Visszaadjuk az időt
-
-        SceneManager.LoadScene(0); // Betöltjük a menüt
+        Application.Quit();
     }
+
 }
