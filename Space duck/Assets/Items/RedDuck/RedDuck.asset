@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e56966e50bc013c44ae226cff828bf34, type: 3}
   m_Name: RedDuck
   m_EditorClassIdentifier: 
+  isSmeltable: 0
+  smeltedResult: {fileID: 0}
+  smeltingTime: 10
+  fuelValue: 40
   itemName: RedDuck
   itemDescription: 
   icon: {fileID: 21300000, guid: c100208a74c58584fa7997bb92a26292, type: 3}
