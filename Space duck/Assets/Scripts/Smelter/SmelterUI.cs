@@ -4,10 +4,7 @@ using TMPro;
 
 public class SmelterUI : MonoBehaviour
 {
-    [Header("References")]
     public Smelter targetSmelter;
-
-    [Header("UI Elements")]
     public Slider tempSlider;
     public Slider pressureSlider;
     public Image progressOverlay;
@@ -16,23 +13,30 @@ public class SmelterUI : MonoBehaviour
     [Header("Buttons")]
     public Button fuelButton;
     public Button waterButton;
+    public Button emergencyButton;
 
-    private void Start()
+    private void Awake()
     {
+        // Tisztítjuk a régi listener-eket, hogy ne legyen duplázódás
+        fuelButton.onClick.RemoveAllListeners();
+        waterButton.onClick.RemoveAllListeners();
+
+        // Újrabindoljuk õket
         fuelButton.onClick.AddListener(OnFuelClick);
         waterButton.onClick.AddListener(OnWaterClick);
 
-        tempSlider.minValue = 0;
-        tempSlider.maxValue = 1200;
-        pressureSlider.minValue = 0;
-        pressureSlider.maxValue = 100;
+        if (emergencyButton != null)
+        {
+            emergencyButton.onClick.RemoveAllListeners();
+            emergencyButton.onClick.AddListener(() => targetSmelter.EmergencyShutdown());
+        }
     }
 
     void Update()
     {
-        // Ha nincs session, alaphelyzetbe állítjuk az UI-t
         if (targetSmelter == null || targetSmelter.currentSession == null)
         {
+            // Ha nincs aktív olvasztás, lassan hûljön le az UI kijelzõje is
             tempSlider.value = Mathf.Lerp(tempSlider.value, 20f, Time.deltaTime);
             pressureSlider.value = Mathf.Lerp(pressureSlider.value, 0f, Time.deltaTime);
             if (progressOverlay != null) progressOverlay.fillAmount = 0;
@@ -40,41 +44,46 @@ public class SmelterUI : MonoBehaviour
             return;
         }
 
-        var session = targetSmelter.currentSession;
-        tempSlider.value = session.temp;
-        pressureSlider.value = session.pressure;
+        var s = targetSmelter.currentSession;
+        tempSlider.value = s.temp;
+        pressureSlider.value = s.pressure;
 
-        // Haladás kijelzése
-    //    if (targetSmelter.inputSlot.HasItem())
-    //    {
-    //        float totalTarget = targetSmelter.inputSlot.GetItem().smeltingTime + session.penaltyTime;
-    //        if (progressOverlay != null) progressOverlay.fillAmount = session.progress / totalTarget;
-    //    }
+        if (targetSmelter.inputSlot.HasItem())
+        {
+            float total = targetSmelter.inputSlot.GetItem().smeltingTime + s.penaltyTime;
+            if (progressOverlay != null) progressOverlay.fillAmount = s.progress / total;
+        }
 
-    //    UpdateStatusText(session);
+        UpdateStatusText(s);
     }
 
     private void UpdateStatusText(SmelterSession s)
     {
         if (s.temp > 800) statusText.text = "<color=red>KRITIKUS HÕ!</color>";
         else if (s.temp < 400) statusText.text = "<color=blue>ALACSONY HÕ</color>";
-        else statusText.text = "<color=green>OPTIMÁLIS OLVASZTÁS</color>";
+        else statusText.text = "<color=green>ÉGETÉS...</color>";
     }
 
-    private void OnFuelClick()
+    public void OnFuelClick()
     {
-        if (targetSmelter.currentSession != null && targetSmelter.fuelSlot.HasItem())
-        {
-            targetSmelter.currentSession.AddHeat(targetSmelter.fuelSlot.GetItem().fuelValue);
-            targetSmelter.fuelSlot.RemoveAmount(1);
-        }
-    }
-
-    private void OnWaterClick()
-    {
+        Debug.Log("Fûtés gomb megnyomva!"); // Konzolban látni fogod, ha mûködik
         if (targetSmelter.currentSession != null)
         {
-            targetSmelter.currentSession.CoolDown();
+            if (targetSmelter.fuelSlot.HasItem())
+            {
+                targetSmelter.currentSession.AddHeat(targetSmelter.fuelSlot.GetItem().fuelValue);
+                targetSmelter.fuelSlot.RemoveAmount(1);
+            }
+            else
+            {
+                Debug.LogWarning("Nincs üzemanyag!");
+            }
         }
+    }
+
+    public void OnWaterClick()
+    {
+        Debug.Log("Hûtés gomb megnyomva!");
+        targetSmelter.currentSession?.CoolDown();
     }
 }

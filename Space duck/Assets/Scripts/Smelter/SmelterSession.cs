@@ -21,36 +21,35 @@ public class SmelterSession
 
     public void Tick(float deltaTime)
     {
-        // Ha nincs tárgy (biztonsági mentés), ne csináljon semmit
         if (activeItem == null) return;
 
-        // Alap nyomásnövekedés és hûlés
-        pressure += 1.5f * deltaTime;
-        temp = Mathf.MoveTowards(temp, 20f, 2f * deltaTime);
+        // FOLYAMATOS VÁLTOZÁSOK
+        pressure += 2.0f * deltaTime; // Nyomás magától nõ
+        temp = Mathf.MoveTowards(temp, 20f, 4f * deltaTime); // Hõmérséklet magától csökken (hûl)
 
-        // Zónák ellenõrzése
-        if (temp > 800)
+        // ZÓNÁK ELLENÕRZÉSE
+        if (temp > 800) // Túl forró: Gyors nyomás és robbanás veszély
         {
-            pressure += 5f * deltaTime;
+            pressure += 8f * deltaTime;
             zoneTimer += deltaTime;
             if (zoneTimer >= 5f) isExploded = true;
         }
-        else if (temp < 400)
+        else if (temp < 400) // Túl hideg: Nincs haladás, büntetõidõ nõ
         {
             zoneTimer += deltaTime;
-            if (zoneTimer >= 5f)
+            if (zoneTimer >= 3f)
             {
-                penaltyTime += 15f;
+                penaltyTime += 5f;
                 zoneTimer = 0f;
             }
         }
-        else
+        else // IDEÁLIS ZÓNA (400-800 fok): Itt ég ki az érc!
         {
             zoneTimer = 0f;
+            progress += deltaTime;
         }
 
-        // Haladás (51. sor javítva: activeItem ellenõrzése után fut)
-        progress += deltaTime;
+        // BEFEJEZÉS ELLENÕRZÉSE
         if (progress >= (activeItem.smeltingTime + penaltyTime))
         {
             isFinished = true;
@@ -60,9 +59,5 @@ public class SmelterSession
     }
 
     public void AddHeat(float amount) => temp += amount;
-    public void CoolDown()
-    {
-        temp -= 60f;
-        pressure += 15f;
-    }
+    public void CoolDown() { temp -= 60f; pressure += 10f; }
 }
