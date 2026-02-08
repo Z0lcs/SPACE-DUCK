@@ -1,22 +1,28 @@
 using UnityEngine;
-using UnityEngine.InputSystem; // Az új Input System miatt
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class Mining : MonoBehaviour
 {
     [Header("Beállítások")]
-    public float miningRange = 4f;       // A te pickupRange-ednek felel meg
-    public LayerMask excludeLayers;      // Rétegek, amiket ne találjon el
-    public Slider powerSlider;           // A UI csúszka
+    public float miningRange = 20f;
+
+    // 1. LÉPÉS: Ez a változó tárolja, mit kell kihagyni (pl. Player layer)
+    public LayerMask excludeLayers;
+
+    public Slider powerSlider;
     public float sliderSpeed = 2.5f;
 
+    public static bool canMove = true;
+
     private bool isSettingPower = false;
-    private Ore currentlyLookedAtOre;    // Mint a currentlyLookedAtItem
+    private Ore currentlyLookedAtOre;
     private bool hitBonusPoint = false;
 
     void Start()
     {
         if (powerSlider != null) powerSlider.gameObject.SetActive(false);
+        canMove = true;
     }
 
     void Update()
@@ -27,10 +33,8 @@ public class Mining : MonoBehaviour
         }
         else
         {
-            // Folyamatosan nézzük, van-e elõttünk érc (mint a PerformInteractionDetection)
             PerformOreDetection();
 
-            // Kattintásra indul a bányászat (mint a HandleInteractionInput)
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
                 if (currentlyLookedAtOre != null)
@@ -46,19 +50,23 @@ public class Mining : MonoBehaviour
         currentlyLookedAtOre = null;
         hitBonusPoint = false;
 
-        // PONTOSAN A TE RAYCAST LOGIKÁD:
+        // Pontosan úgy, ahogy az Inventory.Interaction.cs-ben:
+        // Sugár létrehozása a kamera pozíciójából elõre
         Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        RaycastHit hit;
 
-        if (Physics.Raycast(ray, out RaycastHit hit, miningRange, ~excludeLayers))
+        // Itt a titok: a ~ (tilde) karakter az excludeLayers elõtt
+        // Ez mondja meg a Unity-nek, hogy mindent érzékeljen, KIVÉVE a listában lévõket.
+        if (Physics.Raycast(ray, out hit, miningRange, ~excludeLayers))
         {
-            // Megnézzük, hogy érc-e vagy a rajta lévõ bónusz pont (HitMarker)
+            // Az Ore script keresése a szülõben is (ha több részbõl áll az érc)
             Ore ore = hit.collider.GetComponentInParent<Ore>();
 
             if (ore != null)
             {
                 currentlyLookedAtOre = ore;
 
-                // Ha a HitMarker taget találtuk el, az bónusz
+                // HitMarker (gyenge pont) ellenõrzése a collider tagje alapján
                 if (hit.collider.CompareTag("HitMarker"))
                 {
                     hitBonusPoint = true;
@@ -67,14 +75,16 @@ public class Mining : MonoBehaviour
         }
     }
 
+    // ... (A többi metódus: StartMiningPowerSequence, HandlePowerSlider, FinalizeMiningHit változatlan marad)
+
     private void StartMiningPowerSequence()
     {
-        // Karakter odafordítása az érchez (TPP-nél fontos)
         Vector3 lookTarget = currentlyLookedAtOre.transform.position;
         lookTarget.y = transform.position.y;
         transform.LookAt(lookTarget);
 
         isSettingPower = true;
+        canMove = false;
         powerSlider.gameObject.SetActive(true);
     }
 
@@ -91,15 +101,19 @@ public class Mining : MonoBehaviour
     private void FinalizeMiningHit()
     {
         float power = powerSlider.value;
-        if (power > 0.9f) power *= 2f; // Tökéletes idõzítés bónusz
+        float damageMultiplier = 1f;
+
+        if (power >= 0.45f && power <= 0.55f) damageMultiplier = 2.5f;
+        else if ((power >= 0.2f && power < 0.45f) || (power > 0.55f && power <= 0.8f)) damageMultiplier = 1.0f;
+        else damageMultiplier = 0.5f;
 
         if (currentlyLookedAtOre != null)
         {
-            currentlyLookedAtOre.GetHit(power, hitBonusPoint);
+            currentlyLookedAtOre.GetHit(damageMultiplier, hitBonusPoint);
         }
 
-        // Alaphelyzetbe állítás
         isSettingPower = false;
+        canMove = true;
         powerSlider.gameObject.SetActive(false);
     }
 }

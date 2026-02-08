@@ -2,56 +2,59 @@ using UnityEngine;
 
 public class Ore : MonoBehaviour
 {
-    public OreData data;
-    public GameObject hitMarkerPrefab;
+    [Header("Érc Beállítások")]
+    public InventoryItemSO oreItemSO; // Húzd be ide az érc InventoryItemSO-ját!
+    public OreData oreData;          // Az OreData SO az életerõhöz és mennyiséghez
 
     private float currentHealth;
+
+    [Header("HitMarker")]
+    public GameObject hitMarkerPrefab;
     private GameObject currentMarker;
 
     void Start()
     {
-        currentHealth = data.maxHealth;
-    }
-
-    public void GetHit(float powerMultiplier, bool hitMarker)
-    {
-        // Sebzés számítás: Alap + (Bónusz ha eltalálta a pontot) * Csúszka ereje
-        float baseDamage = hitMarker ? 40f : 15f;
-        float totalDamage = baseDamage * (1f + powerMultiplier);
-
-        currentHealth -= totalDamage;
-        Debug.Log($"{data.oreName} élete: {currentHealth}");
-
-        if (currentMarker != null) Destroy(currentMarker);
-
-        if (currentHealth <= 0)
+        if (oreData != null)
         {
-            Debug.Log($"{data.oreName} kibányászva! Kapott mennyiség: {data.yieldAmount}");
-            Destroy(gameObject);
-            return;
+            currentHealth = oreData.maxHealth; // OreData-ból vesszük az életerõt
         }
-
         SpawnMarker();
     }
 
-    void SpawnMarker()
+    public void GetHit(float damageMultiplier, bool hitMarker)
     {
-        // Kicsit távolabb rakjuk a szikla közepétõl, hogy ne lógjon bele (0.5 helyett 0.8f)
-        Vector3 randomOffset = Random.onUnitSphere * 0.5f;
-        currentMarker = Instantiate(hitMarkerPrefab, transform.position + randomOffset, Quaternion.identity);
-        currentMarker.transform.parent = transform;
-        currentMarker.tag = "HitMarker";
+        float baseDamage = 20f;
+        float sliderDamage = baseDamage * damageMultiplier;
+        float finalDamage = hitMarker ? (sliderDamage * 2f) : sliderDamage;
 
-        // Szín és fény beállítása
-        Renderer rend = currentMarker.GetComponent<Renderer>();
-        if (rend != null)
+        currentHealth -= finalDamage;
+
+        if (hitMarker) Debug.Log("<color=cyan>[HITMARKER TALÁLAT!]</color>");
+
+        if (currentHealth <= 0)
         {
-            // Alapszín beállítása
-            rend.material.color = data.markerColor;
-
-            // Emission (világítás) bekapcsolása kódból, hogy rikítson
-            rend.material.EnableKeyword("_EMISSION");
-            rend.material.SetColor("_EmissionColor", data.markerColor * 2f); // 2x-es erõsség
+            GiveReward(); // Érc hozzáadása az inventoryhoz
+            return;
         }
+
+        if (currentMarker != null) Destroy(currentMarker);
+        SpawnMarker();
+    }
+
+    private void GiveReward()
+    {
+        if (Inventory.Instance != null && oreItemSO != null && oreData != null)
+        {
+            // Meghívjuk az Inventory.Logic.cs-ben lévõ AddItem-et
+            Inventory.Instance.AddItem(oreItemSO, oreData.yieldAmount);
+            Debug.Log($"<color=green>{oreData.oreName} hozzáadva!</color>");
+        }
+
+        Destroy(gameObject);
+    }
+
+    private void SpawnMarker()
+    {
+        // Marker spawnolási logika...
     }
 }
