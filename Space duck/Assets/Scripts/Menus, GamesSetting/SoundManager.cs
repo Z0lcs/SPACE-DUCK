@@ -12,14 +12,14 @@ public class SoundManager : MonoBehaviour
     void Start()
     {
         masterSlider.value = 70f;
-        bgSlider.value = 70f;
+        bgSlider.value = 10f;
         questSlider.value = 70f;
         expSlider.value = 70f;
 
-        ApplyVolume("Master", 70f);
-        ApplyVolume("BG", 70f);
-        ApplyVolume("Quest", 70f);
-        ApplyVolume("Explosion", 70f);
+        SetMasterVolume(70f);
+        SetBGVolume(10f);
+        SetQuestVolume(70f);
+        SetExplosionVolume(70f);
     }
 
     public void SetMasterVolume(float val) => ApplyVolume("Master", val);

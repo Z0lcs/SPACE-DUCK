@@ -17,5 +17,7 @@ MonoBehaviour:
     \xCDgy kapod meg a hajt\xF3m\xFBvet."
   questObjectives:
   - description: "Szerel\xE9s"
-    target: {fileID: 0}
+    target: {fileID: 11400000, guid: bf5c6d09ff1c85c4eaa87c1521def52a, type: 2}
     requiredAmount: 2
+    mustBeInChest: 0
+    modelID: 

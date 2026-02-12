@@ -36,7 +36,6 @@ public class SettingsVariable : MonoBehaviour
         inputField.text = value.ToString("0.##");
         PlayerPrefs.SetFloat(saveKey, value);
 
-        if (saveKey == "Sensitivity") PlayerSettings.sensitivityMultiplier = value;
         if (saveKey == "Speed") PlayerSettings.currentSpeedMultiplier = value;
         if (saveKey == "FOV")
         {
