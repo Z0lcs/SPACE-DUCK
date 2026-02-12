@@ -34187,8 +34187,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24212df9cb178504aa5cab8fcef15d59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHunger: 0
-  currentHunger: 0
+  maxHunger: 9
+  currentHunger: 9
 --- !u!64 &1301779272
 MeshCollider:
   m_ObjectHideFlags: 0
