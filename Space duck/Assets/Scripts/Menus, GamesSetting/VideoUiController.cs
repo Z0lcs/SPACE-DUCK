@@ -1,14 +1,21 @@
 using UnityEngine;
 using UnityEngine.Video;
+using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 public class VideoUiController : MonoBehaviour
 {
     public VideoPlayer videoPlayer;
     public GameObject mainCanvas;
+    public AudioMixer masterMixer;
 
     [Header("Beállítások")]
     public VideoClip introClip;
     public VideoClip questClip;
+    public string nextSceneName; 
+
+    [Header("Exposed Parameter Neve")]
+    public string mixerParameterName = "Master"; 
 
     public bool isQuestCompleted = false;
 
@@ -17,7 +24,7 @@ public class VideoUiController : MonoBehaviour
         if (videoPlayer != null)
         {
             videoPlayer.started += HideUI;
-            videoPlayer.loopPointReached += ShowUI;
+            videoPlayer.loopPointReached += OnVideoFinished;
         }
     }
 
@@ -26,7 +33,32 @@ public class VideoUiController : MonoBehaviour
         if (videoPlayer != null)
         {
             videoPlayer.started -= HideUI;
-            videoPlayer.loopPointReached -= ShowUI;
+            videoPlayer.loopPointReached -= OnVideoFinished;
+        }
+    }
+
+    void OnVideoFinished(VideoPlayer vp)
+    {
+        if (vp.clip == questClip)
+        {
+            Debug.Log("Quest videó kész, takarítás és váltás...");
+            PrepareForSceneChange();
+            SceneManager.LoadScene(nextSceneName);
+        }
+        else
+        {
+            ShowUI(vp);
+        }
+    }
+
+    private void PrepareForSceneChange()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        if (masterMixer != null)
+        {
+            masterMixer.SetFloat(mixerParameterName, 0f);
         }
     }
 
@@ -45,20 +77,22 @@ public class VideoUiController : MonoBehaviour
     public void StartQuestVideoSequence(float delay = 15f)
     {
         isQuestCompleted = true;
-        Debug.Log("Quest kész! Most már megnyomhatod az E-t a videóhoz.");
+        Debug.Log("Quest kész! Mehet a videó.");
     }
 
     public void PlayIntro()
     {
-        if (introClip != null)
-        {
-            PlayVideo(introClip);
-        }
+        if (introClip != null) PlayVideo(introClip);
     }
 
     private void PlayVideo(VideoClip clip)
     {
         if (videoPlayer == null) return;
+
+        if (clip == questClip)
+        {
+            MuteGameAudio(true);
+        }
 
         videoPlayer.gameObject.SetActive(true);
         videoPlayer.clip = clip;
@@ -68,18 +102,27 @@ public class VideoUiController : MonoBehaviour
     void HideUI(VideoPlayer vp)
     {
         if (mainCanvas != null) mainCanvas.SetActive(false);
-        Debug.Log("UI elrejtve, videó indul.");
     }
 
     void ShowUI(VideoPlayer vp)
     {
-        Debug.Log("Videó véget ért, UI visszakapcsolása.");
         if (mainCanvas != null) mainCanvas.SetActive(true);
+
+        MuteGameAudio(false);
 
         vp.Stop();
         videoPlayer.gameObject.SetActive(false);
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+    }
+
+    private void MuteGameAudio(bool mute)
+    {
+        if (masterMixer != null)
+        {
+            float volume = mute ? -80f : 0f;
+            masterMixer.SetFloat(mixerParameterName, volume);
+        }
     }
 }
